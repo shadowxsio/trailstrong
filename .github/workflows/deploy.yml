@@ -1,0 +1,101 @@
+name: Deploy
+
+# Build de l'app et publication sur GitHub Pages : https://<owner>.github.io/trailstrong/
+# - push sur main : le vrai site ;
+# - fin du workflow « PR checks » : le vrai site + l'aperçu de la PR sous preview/pr-N/,
+#   puis commentaire des résultats dans la PR (toujours exécuté depuis main).
+on:
+  push:
+    branches: [main]
+  workflow_run:
+    workflows: ["PR checks"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  # Aperçus de PR : lire l'artefact de la PR et commenter ses résultats.
+  actions: read
+  pull-requests: write
+
+# Un seul déploiement à la fois, sans annuler celui en cours.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Aperçus : uniquement les PR de ce dépôt (pas de fork), hors Dependabot (une dépendance
+    # piégée serait publiée sur le même domaine que le vrai site ; ses tests tournent quand même).
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.actor.login != 'dependabot[bot]' && github.event.workflow_run.pull_requests[0].number)
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install & build 🏔️
+        env:
+          # Optionnel : SHA-256 hex du PIN (secret du dépôt). Sans secret → PIN par défaut « 2026 ».
+          VITE_APP_PASSWORD_HASH: ${{ secrets.APP_PASSWORD_HASH }}
+          # Connexion Google sans serveur : client OAuth + email(s) autorisé(s) (variable ou secret, au choix).
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID || secrets.GOOGLE_CLIENT_ID }}
+          ALLOWED_GOOGLE_EMAIL: ${{ secrets.ALLOWED_GOOGLE_EMAIL || vars.ALLOWED_GOOGLE_EMAIL }}
+          # Comptes multi-utilisateurs (Firebase) : valeurs publiques par conception.
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY || secrets.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN || secrets.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID || secrets.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID || secrets.FIREBASE_APP_ID }}
+          # App Check (anti-bots) : clé de site reCAPTCHA Enterprise, publique elle aussi.
+          VITE_RECAPTCHA_SITE_KEY: ${{ vars.RECAPTCHA_SITE_KEY || secrets.RECAPTCHA_SITE_KEY }}
+        run: |
+          npm ci
+          npm run build
+      # ── Aperçu de PR (déclenché par « PR checks ») ──
+      # Le site est rebuildé depuis main ; l'aperçu (déjà construit, sans secrets, stockage
+      # isolé) est ajouté sous preview/pr-N/. Le prochain déploiement le remplace.
+      - name: Récupération de l'aperçu de la PR
+        id: preview
+        if: github.event_name == 'workflow_run'
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: pr-preview
+          path: ${{ runner.temp }}/pr-preview
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Ajout de l'aperçu sous preview/pr-N/
+        if: steps.preview.outcome == 'success'
+        env:
+          PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          mkdir -p dist/preview
+          mv "$RUNNER_TEMP/pr-preview/site" "dist/preview/pr-$PR"
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Résultats des tests dans la PR
+        if: steps.preview.outcome == 'success'
+        uses: actions/github-script@v7
+        env:
+          PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+        with:
+          script: |
+            const fs = require('fs')
+            const body = fs.readFileSync(`${process.env.RUNNER_TEMP}/pr-preview/comment.md`, 'utf8')
+            const issue_number = Number(process.env.PR)
+            const { owner, repo } = context.repo
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number, per_page: 100 })
+            const mine = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes('<!-- trailstrong-e2e -->'))
+            if (mine) await github.rest.issues.updateComment({ owner, repo, comment_id: mine.id, body })
+            else await github.rest.issues.createComment({ owner, repo, issue_number, body })
