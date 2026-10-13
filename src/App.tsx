@@ -1,6 +1,5 @@
 import { BarChart3, LayoutGrid, Menu, Search } from 'lucide-react'
-import { Suspense, lazy, useEffect, useMemo, useRef, useState, type CSSProperties, type ComponentProps, type TouchEvent } from 'react'
-import { flushSync } from 'react-dom'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState, type ComponentProps, type TouchEvent } from 'react'
 import { Catalog, type Scope } from './components/Catalog'
 import { SESSION_META } from './components/meta'
 import { LoginScreen } from './components/LoginScreen'
@@ -13,7 +12,6 @@ import { useProgram } from './lib/custom'
 import { firebaseEnabled } from './lib/firebaseConfig'
 import { inSandbox } from './lib/sandbox'
 import { today, updateProfile, useData } from './lib/storage'
-import { haptic } from './lib/haptics'
 
 const CloudApp = lazy(() => import('./CloudApp'))
 // Écrans secondaires chargés à la demande (démarrage plus léger ; précachés pour le hors-ligne).
@@ -107,48 +105,11 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
   const touch = useRef<{ x: number; y: number; ok: boolean } | null>(null)
 
   const setView = (v: View) => {
+    setViewState(v)
+    setFocus(null)
     localStorage.setItem(VIEW_KEY, v)
-    const apply = () => {
-      setViewState(v)
-      setFocus(null)
-      window.scrollTo({ top: 0 })
-    }
-    // Changement d'onglet animé : la page glisse dans le sens de l'onglet (View Transitions).
-    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown }
-    if (v === view || !doc.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return apply()
-    const ids = TABS.map((t) => t.id)
-    document.documentElement.dataset.vt = ids.indexOf(v) < ids.indexOf(view) ? 'back' : 'fwd'
-    const vt = doc.startViewTransition(() => flushSync(apply)) as { finished?: Promise<void> }
-    vt.finished?.finally(() => delete document.documentElement.dataset.vt)
+    window.scrollTo({ top: 0 })
   }
-  const tabIndex = Math.max(0, TABS.findIndex((t) => t.id === view))
-  // En-tête compact (verre) dès qu'on fait défiler la page.
-  const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    let raf = 0
-    const on = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => setScrolled(window.scrollY > 24))
-    }
-    window.addEventListener('scroll', on, { passive: true })
-    on()
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', on)
-    }
-  }, [])
-  // Pastille du dock : étirement « liquide » pendant le déplacement.
-  const [pillMoving, setPillMoving] = useState(false)
-  const firstPill = useRef(true)
-  useEffect(() => {
-    if (firstPill.current) {
-      firstPill.current = false
-      return
-    }
-    setPillMoving(true)
-    const id = window.setTimeout(() => setPillMoving(false), 560)
-    return () => window.clearTimeout(id)
-  }, [tabIndex])
 
   const focusSearch = () => {
     if (view === 'stats') setView('all')
@@ -174,7 +135,7 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
     const i = TABS.findIndex((t) => t.id === view)
     const j = i + (dx < 0 ? 1 : -1)
     if (j >= 0 && j < TABS.length) {
-      haptic(8)
+      navigator.vibrate?.(8)
       setView(TABS[j].id)
     }
   }
@@ -194,14 +155,9 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
   return (
     <div className="min-h-dvh" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       {/* ── En-tête ── */}
-      <header className={`pt-safe sticky top-0 z-30 transition-[background-color,box-shadow] duration-300 ${scrolled ? 'header-glass' : ''}`}>
-        <div className={`mx-auto flex max-w-6xl items-center gap-2.5 px-3 transition-[padding] duration-300 md:px-6 ${scrolled ? 'pb-2 pt-2' : 'pb-4 pt-4'}`}>
-          <button
-            type="button"
-            onClick={() => setView('all')}
-            className={`logo-patch -rotate-2 origin-left text-[19px] transition-[scale] duration-300 min-[400px]:text-[22px] ${scrolled ? 'scale-[0.84]' : ''}`}
-            aria-label="Accueil"
-          >
+      <header className="pt-safe">
+        <div className="mx-auto flex max-w-6xl items-center gap-2.5 px-3 pb-4 pt-4 md:px-6">
+          <button type="button" onClick={() => setView('all')} className="logo-patch -rotate-2 text-[19px] min-[400px]:text-[22px]" aria-label="Accueil">
             <span>TrailStrong</span>
           </button>
           <button
@@ -239,7 +195,7 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
         </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl px-3 pb-48 md:px-6 md:pb-28" style={{ viewTransitionName: 'page' } as CSSProperties}>
+      <main className="mx-auto max-w-6xl px-3 pb-44 md:px-6 md:pb-28">
         {view === 'stats' ? (
           <Suspense fallback={null}>
             <StatsView testsOpen={testsOpen} setTestsOpen={setTestsOpen} />
@@ -251,43 +207,32 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
       <TimerBar />
 
-      {/* ── Dock mobile : capsule en verre + pastille liquide ── */}
-      <nav
-        className="vt-dock pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(10px+env(safe-area-inset-bottom))] md:hidden"
-        aria-label="Onglets"
-        data-noswipe
-        data-tour="tabs"
-      >
-        <div className="glass pointer-events-auto relative mx-auto max-w-xl rounded-[30px] p-1">
-          <span
-            aria-hidden="true"
-            className={`liquid-pill absolute bottom-1 left-1 top-1 rounded-[26px] border-2 border-ink shadow-[0_2px_0_var(--color-shadow)] ${TABS[tabIndex]?.bg ?? 'bg-paper'} ${pillMoving ? 'moving' : ''}`}
-            style={{ width: `calc((100% - 8px) / ${TABS.length})`, transform: `translateX(${tabIndex * 100}%)` }}
-          />
-          <ul className="relative grid" style={{ gridTemplateColumns: `repeat(${TABS.length}, minmax(0, 1fr))` }}>
-            {TABS.map((t) => {
-              const active = t.id === view
-              return (
-                <li key={t.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!active) haptic(6)
-                      setView(t.id)
-                    }}
-                    aria-current={active ? 'page' : undefined}
-                    className={`squish flex h-[56px] w-full flex-col items-center justify-center gap-0.5 px-0.5 ${active && t.bg !== 'bg-paper' ? 'text-on' : ''}`}
+      {/* ── Dock mobile ── */}
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t-[2.5px] border-ink bg-paper md:hidden" aria-label="Onglets" data-noswipe data-tour="tabs">
+        <ul className="grid" style={{ gridTemplateColumns: `repeat(${TABS.length}, minmax(0, 1fr))` }}>
+          {TABS.map((t) => {
+            const active = t.id === view
+            return (
+              <li key={t.id}>
+                <button
+                  type="button"
+                  onClick={() => setView(t.id)}
+                  aria-current={active ? 'page' : undefined}
+                  className="flex h-[60px] w-full flex-col items-center justify-center gap-0.5 px-0.5"
+                >
+                  <span
+                    className={`grid h-8 w-11 place-items-center rounded-full border-2 text-[16px] transition-all duration-150 ${
+                      active ? `${t.bg} -translate-y-0.5 border-ink shadow-[0_2px_0_var(--color-shadow)]` : 'border-transparent'
+                    }`}
                   >
-                    <span className={`grid h-7 place-items-center text-[17px] transition-transform duration-300 ${active ? '-translate-y-px scale-110' : ''}`}>
-                      {t.id === 'all' ? <LayoutGrid className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.id === 'stats' ? <BarChart3 className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.emoji}
-                    </span>
-                    <span className={`truncate text-[10px] uppercase tracking-wide ${active ? 'font-black' : 'font-extrabold text-ink/60'}`}>{t.short}</span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+                    {t.id === 'all' ? <LayoutGrid className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.id === 'stats' ? <BarChart3 className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.emoji}
+                  </span>
+                  <span className={`truncate text-[10px] uppercase tracking-wide ${active ? 'font-black text-ink' : 'font-extrabold text-ink/55'}`}>{t.short}</span>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
       </nav>
 
       <Suspense fallback={null}>

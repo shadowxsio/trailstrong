@@ -44,7 +44,7 @@ export const ExerciseTile = memo(function ExerciseTile({
         {done ? '✓ Validé' : `${s.label} · ${String(index + 1).padStart(2, '0')}`}
       </span>
 
-      <div data-card={ex.id} className={`b-card relative ${TILT[index % 4]} transition-transform duration-150`}>
+      <div className={`b-card relative ${TILT[index % 4]} transition-transform duration-150`}>
         <button type="button" onClick={() => onOpen(ex, sessionId)} className="block w-full px-4 pb-3 pt-4 text-left" aria-label={`Ouvrir ${ex.name}`}>
           <div className="flex items-center gap-3.5">
             <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-full border-[2.5px] border-ink bg-sky shadow-[0_2px_0_var(--color-shadow)]`}>
@@ -91,7 +91,7 @@ export const ExerciseTile = memo(function ExerciseTile({
               sets.map((x, i) => (
                 <span
                   key={i}
-                  className={`h-3 w-3 border-2 border-ink rounded-xl transition-colors duration-300 ${x.done ? 'pop ' : ''}${
+                  className={`h-3 w-3 border-2 border-ink rounded-xl ${
                     x.done ? 'bg-leaf' : x.L?.done || x.R?.done ? 'bg-[linear-gradient(90deg,var(--color-leaf)_50%,var(--color-paper)_50%)]' : 'bg-paper'
                   }`}
                 />
@@ -106,9 +106,9 @@ export const ExerciseTile = memo(function ExerciseTile({
             data-tour={tour ? 'validate' : undefined}
             onClick={toggleDone}
             aria-pressed={done}
-            className={`b-btn drop squish flex h-10 items-center gap-1.5 px-3 text-[12px] uppercase tracking-wide ${done ? 'pop bg-mint' : ''}`}
+            className={`b-btn flex h-10 items-center gap-1.5 px-3 text-[12px] uppercase tracking-wide ${done ? 'pop bg-mint' : ''}`}
           >
-            <Check className={`h-4 w-4 ${done ? 'check-draw' : ''}`} strokeWidth={3.5} />
+            <Check className="h-4 w-4" strokeWidth={3.5} />
             {done ? 'Validé' : 'Valider'}
           </button>
         </div>
