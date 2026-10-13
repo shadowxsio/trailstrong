@@ -68,8 +68,10 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
   // Backups Gist (api.github.com), photos du catalogue et autres origines : jamais interceptés.
   if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
-  const rel = req.mode === 'navigate' ? './' : './' + decodeURIComponent(url.pathname.slice(SCOPE.pathname.length));
-  if (!ASSETS[rel]) return;
+  const path = decodeURIComponent(url.pathname.slice(SCOPE.pathname.length));
+  // Navigation : seulement la racine de l'app (les aperçus de PR sous preview/ passent par le réseau).
+  const rel = req.mode === 'navigate' ? (path === '' || path === 'index.html' ? './' : null) : './' + path;
+  if (!rel || !ASSETS[rel]) return;
   // Cache d'abord (ouverture instantanée), réseau si le fichier manque.
   event.respondWith(caches.open(CACHE).then((c) => c.match(keyOf(rel))).then((hit) => hit || fetch(req)));
 });
@@ -178,7 +180,7 @@ function preview(): Plugin {
 }
 
 export default defineConfig({
-  // Chemins relatifs : l'app fonctionne sous /web_hosting/trailstrong/ comme sous un domaine perso.
+  // Chemins relatifs : l'app fonctionne sous /trailstrong/ comme sous un domaine perso.
   base: './',
   define: {
     // Empreintes SHA-256 des emails Google autorisés (l'email n'est pas publié en clair).
@@ -194,7 +196,7 @@ export default defineConfig({
   },
   plugins: [react(), tailwindcss(), serviceWorker(), csp(), preview()],
   build: {
-    outDir: '../trailstrong',
+    outDir: 'dist',
     emptyOutDir: true,
     target: 'es2022',
   },

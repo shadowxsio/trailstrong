@@ -1,16 +1,16 @@
 # TrailStrong — instructions pour les agents
 
 PWA de renforcement pour coureurs (React 19 + Vite + TypeScript + Tailwind v4), publiée sur
-https://shadowxsio.github.io/web_hosting/trailstrong/. Interface **en français, tutoiement**.
-Le `README.md` à la racine du dépôt décrit les fonctionnalités en détail.
+https://shadowxsio.github.io/trailstrong/ (dépôt dédié `shadowxsio/trailstrong`). Interface **en français, tutoiement**.
+Le `README.md` décrit les fonctionnalités en détail.
 
-## Commandes (depuis `trailstrong-src/`)
+## Commandes
 
 ```bash
 npm ci
 npm run dev              # http://localhost:5173 (PIN local : 2026 ; /#schemas = planche des schémas)
 npm run typecheck        # tsc -b
-npm run build            # build de production → ../trailstrong (ignoré par git)
+npm run build            # build de production → dist/ (ignoré par git)
 npm run build:preview    # build d'aperçu → dist-preview (stockage isolé, sans service worker)
 npm run test:e2e         # tests Playwright sur dist-preview (lance vite preview tout seul)
 ```
@@ -19,11 +19,11 @@ En local, si Chromium est déjà installé ailleurs : `PW_CHROMIUM=/chemin/chrom
 
 ## Pipeline de PR (automatique, ne rien faire à la main)
 
-1. `.github/workflows/trailstrong-pr.yml` (sur chaque PR qui touche `trailstrong-src/**`) :
+1. `.github/workflows/pr.yml` (sur chaque PR) :
    build d'aperçu **sans secrets**, tests e2e, résumé Markdown (`e2e/report.mjs`) → artefact `pr-preview`.
    Le check « e2e » échoue si un test échoue.
 2. `.github/workflows/deploy.yml` (déclenché par `workflow_run`, toujours exécuté depuis `main`) :
-   rebuild du vrai site + ajout de l'aperçu sous `/web_hosting/preview/pr-N/` (avec le rapport
+   rebuild du vrai site + ajout de l'aperçu sous `/trailstrong/preview/pr-N/` (avec le rapport
    Playwright `rapport/` et les captures `e2e/`), puis commentaire dans la PR
    (marqueur `<!-- trailstrong-e2e -->`, mis à jour à chaque push).
 3. Le déploiement suivant (push sur `main`) remplace l'aperçu. Forks et Dependabot : tests oui, aperçu non.

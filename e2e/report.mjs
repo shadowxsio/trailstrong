@@ -43,7 +43,7 @@ const changed = new Set((BASE_REF ? git(`git diff --name-only origin/${BASE_REF}
 const baseTitles = new Map()
 const statusOf = (t) => {
   if (!BASE_REF) return ''
-  if (!baseTitles.has(t.file)) baseTitles.set(t.file, titlesIn(git(`git show origin/${BASE_REF}:trailstrong-src/e2e/${t.file}`)))
+  if (!baseTitles.has(t.file)) baseTitles.set(t.file, titlesIn(git(`git show origin/${BASE_REF}:e2e/${t.file}`)))
   if (!baseTitles.get(t.file).has(t.title)) return '🆕'
   return changed.has(t.file) ? '✏️' : ''
 }
