@@ -23,48 +23,57 @@
   src: url("./assets/fonts/shrikhand.woff2") format("woff2");
 }
 
-/* ── Style « Écusson » : patchs brodés & autocollants outdoor des années 70 ──
-   Coutures en pointillés, formes arrondies, bandes coucher de soleil
-   (moutarde, orange, rouille, sarcelle), titres rétro arrondis. */
+/* ── Style « Swiss Alpine Editorial / Night Trail » ──
+   Grille stricte, filets fins crème, angles nets (≤ 8 px), aplats rares :
+   indigo nuit + ardoise violette, ocre/ambre (actif), corail (action), menthe (validé). */
 @theme {
-  /* Thème sombre « feu de camp » (défaut) ; le thème clair « ciel d'été » le redéfinit plus bas. */
-  --color-ink: #f7e8d0; /* texte, contours, coutures */
-  --color-paper: #2a2343; /* surfaces (écussons, boutons) */
-  --color-paper-2: #1d1830; /* fond de page */
-  --color-shadow: #0d0a17; /* ombre portée sous les écussons */
-  --color-hero: #2f2650; /* bandeau du haut */
-  --color-sky: #8fd0cf;
-  --color-sun: #f2b33d; /* moutarde */
-  --color-mint: #93d2b2;
-  --color-peach: #f4ab7a;
-  --color-lilac: #b9a3e3;
-  --color-rose: #ec8c74;
-  --color-flame: #ec7a32; /* orange */
-  --color-rust: #c4452f; /* rouille */
-  --color-teal: #3a9a8f; /* sarcelle */
-  --color-ocean: #6ccbc2; /* sarcelle claire (texte / flèches sur fond sombre) */
-  --color-leaf: #84d6a6;
-  --color-danger: #ff8f7a;
-  --color-on: #2a1d3d; /* texte sur les aplats colorés */
+  /* Thème sombre « Night Trail » (défaut) ; le thème clair « papier » le redéfinit plus bas. */
+  --color-ink: #ffffff; /* texte principal */
+  --color-muted: #b5b0c8; /* métadonnées */
+  --color-cream: #f4efe6; /* contours nets (pilules, boutons) */
+  --color-line: rgb(244 239 230 / 0.22); /* filets de la grille */
+  --color-paper: #211d35; /* cartes (ardoise violette) */
+  --color-paper-2: #141122; /* fond de page (indigo nuit) */
+  --color-glass: rgb(33 29 53 / 0.88); /* dock flottant, chrono */
+  --color-shadow: #0b0914;
+  --color-hero: #211d35;
+  --color-sun: #f2b84b; /* ambre : actif, progression */
+  --color-flame: #e87a3e; /* corail : actions */
+  --color-mint: #85c7c7; /* menthe : validé, médaillons */
+  --color-leaf: #85c7c7;
+  --color-sky: #a9d6d6;
+  --color-ocean: #85c7c7; /* menthe en texte sur fond sombre */
+  --color-teal: #5fa9a9;
+  --color-peach: #f0a679;
+  --color-lilac: #b5b0c8;
+  --color-rose: #ee9466;
+  --color-rust: #c9622c;
+  --color-danger: #ff8a7a;
+  --color-on: #141122; /* texte sur les aplats colorés */
+  --radius-card: 8px;
   --font-sans: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Shrikhand", "Cooper Black", Georgia, serif;
   --font-mono: "Karla", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Thème clair « ciel d'été », activable depuis le Menu. */
+/* Thème clair « papier » (crème + encre indigo), activable depuis le Menu. */
 :root[data-theme="light"] {
-  --color-ink: #2a1d3d;
-  --color-paper: #fff7ea;
-  --color-paper-2: #cfe7e3;
-  --color-shadow: #2a1d3d;
-  --color-hero: #fbe2bd;
-  --color-sky: #8fd0cf;
-  --color-sun: #f0aa2b;
-  --color-flame: #e46a24;
-  --color-rust: #b63c27;
-  --color-teal: #2c8378;
-  --color-ocean: #1f6f68;
-  --color-leaf: #1e7a55;
+  --color-ink: #141122;
+  --color-muted: #5d5873;
+  --color-cream: #141122;
+  --color-line: rgb(20 17 34 / 0.18);
+  --color-paper: #fffdf8;
+  --color-paper-2: #f4efe6;
+  --color-glass: rgb(255 253 248 / 0.92);
+  --color-shadow: #141122;
+  --color-hero: #fffdf8;
+  --color-sun: #f2b84b;
+  --color-flame: #d9682b;
+  --color-mint: #85c7c7;
+  --color-leaf: #85c7c7;
+  --color-ocean: #2f7c7c;
+  --color-teal: #2f7c7c;
+  --color-rust: #a94c1c;
   --color-danger: #b3261e;
   color-scheme: light;
 }
@@ -87,152 +96,212 @@ body {
   font-weight: 500;
   font-feature-settings: "tnum" 1;
   background-color: var(--color-paper-2);
-  /* Soleil qui se lève derrière le bandeau. */
-  background-image: radial-gradient(circle at 50% -40px, color-mix(in srgb, var(--color-sun) 16%, transparent) 0 220px, transparent 221px);
-  background-repeat: no-repeat;
 }
 
-/* Bandeau : soleil couchant + 4 bandes (moutarde, orange, rouille, sarcelle) en pied. */
+/* Bloc d'en-tête de page : panneau de la grille, filet fin. */
 .hero {
-  background-color: var(--color-hero);
-  background-image:
-    linear-gradient(
-      to bottom,
-      transparent calc(100% - 18px),
-      var(--color-sun) calc(100% - 18px) calc(100% - 13.5px),
-      var(--color-flame) calc(100% - 13.5px) calc(100% - 9px),
-      var(--color-rust) calc(100% - 9px) calc(100% - 4.5px),
-      var(--color-teal) calc(100% - 4.5px)
-    ),
-    radial-gradient(circle at 88% 100%, color-mix(in srgb, var(--color-sun) 45%, transparent) 0 70px, transparent 71px),
-    radial-gradient(circle at 88% 100%, color-mix(in srgb, var(--color-flame) 25%, transparent) 0 105px, transparent 106px);
-  border-top: 2px solid var(--color-ink);
-  border-bottom: 2px solid var(--color-ink);
-  padding-bottom: max(1.5rem, 34px);
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
 }
 
-/* Fond des schémas d'exercice : écusson clair avec petit soleil. */
+/* Fond des schémas d'exercice : papier quadrillé discret. */
 .diagram-bg {
-  background-color: color-mix(in srgb, var(--color-sky) 14%, var(--color-paper));
+  background-color: color-mix(in srgb, var(--color-paper-2) 55%, var(--color-paper));
   background-image:
-    radial-gradient(circle at 84% 20%, color-mix(in srgb, var(--color-sun) 34%, transparent) 0 9%, transparent 9.5%),
-    radial-gradient(color-mix(in srgb, var(--color-ink) 8%, transparent) 1px, transparent 1.3px);
-  background-size: auto, 12px 12px;
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: -1px -1px;
+}
+:root[data-theme="light"] .diagram-bg {
+  background-color: #fbf7ef;
 }
 
-/* Titre rétro : arrondi, ombre rouille décalée. */
+/* Titres de section et de fiche : Karla serrée (le Shrikhand est réservé à .display). */
 .headline {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--color-ink);
+}
+.headline-sun {
+  color: var(--color-sun);
+}
+/* Grands titres, logo et chronos : Shrikhand, avec parcimonie. */
+.display {
   font-family: var(--font-display);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1;
-  color: var(--color-ink);
-  /* Ombre proportionnelle à la taille : nette sur les petits titres comme sur les grands. */
-  text-shadow: 0.06em 0.06em 0 var(--color-rust);
-}
-:root[data-theme="light"] .headline {
-  text-shadow: 0.06em 0.06em 0 color-mix(in srgb, var(--color-sun) 90%, transparent);
-}
-.headline-sun,
-:root[data-theme="light"] .headline-sun {
-  color: var(--color-sun);
-  text-shadow: 0.06em 0.06em 0 var(--color-rust);
 }
 
-/* Logo « écusson » (en-tête, connexion). */
+/* Logo (en-tête, connexion). */
 .logo-patch {
   display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  border: 2px solid var(--color-ink);
-  background: var(--color-paper);
-  outline: 1.5px dashed color-mix(in srgb, var(--color-ink) 55%, transparent);
-  outline-offset: -6px;
-  box-shadow: 0 3px 0 var(--color-shadow);
-  padding: 0.35em 1em 0.45em;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
-.logo-patch > span {
+.logo-patch > span:first-child {
   font-family: var(--font-display);
   color: var(--color-sun);
-  text-shadow: 2px 2px 0 var(--color-rust);
   line-height: 1;
 }
 
-/* Bandes coucher de soleil, en filet décoratif. */
-.stripes {
-  height: 12px;
-  background: linear-gradient(
-    to bottom,
-    var(--color-sun) 0 25%,
-    var(--color-flame) 25% 50%,
-    var(--color-rust) 50% 75%,
-    var(--color-teal) 75%
-  );
+/* Sur-titre éditorial : petites capitales espacées. */
+.kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
 
-/* Menu : liste cousue. */
+/* Filet décoratif (ancien bandeau rayé) : simple ligne ambre. */
+.stripes {
+  height: 2px;
+  background: var(--color-sun);
+}
+
+/* Menu : liste à filets. */
 .lined {
   background-color: var(--color-paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0 55px, color-mix(in srgb, var(--color-teal) 55%, transparent) 55px 57px);
+  background-image: repeating-linear-gradient(to bottom, transparent 0 56px, var(--color-line) 56px 57px);
 }
 
 @layer components {
-  /* Écusson : arrondi, contour encre, couture en pointillés à l'intérieur. */
+  /* Carte : ardoise violette, une seule bordure fine crème, angles nets. */
   .b-card {
     background: var(--color-paper);
-    border: 2px solid var(--color-ink);
-    border-radius: 18px;
-    outline: 1.5px dashed color-mix(in srgb, var(--color-ink) 45%, transparent);
-    outline-offset: -7px;
-    box-shadow: 0 4px 0 var(--color-shadow);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
   }
   .b-box {
     background: var(--color-paper);
-    border: 2px solid var(--color-ink);
-    border-radius: 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
   }
   .b-btn {
     background: var(--color-paper);
-    border: 2px solid var(--color-ink);
-    border-radius: 14px;
-    box-shadow: 0 3px 0 var(--color-shadow);
-    font-weight: 800;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    font-weight: 700;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+  }
+  .b-btn:hover {
+    border-color: color-mix(in srgb, var(--color-cream) 60%, transparent);
   }
   .b-btn:active {
-    transform: translateY(2px);
-    box-shadow: 0 1px 0 var(--color-shadow);
+    transform: translateY(1px);
   }
   .b-btn-ink {
-    background: var(--color-ink);
-    color: var(--color-paper);
+    background: var(--color-cream);
+    border-color: var(--color-cream);
+    color: var(--color-on);
+  }
+  :root[data-theme="light"] .b-btn-ink {
+    color: #fffdf8;
   }
   .b-input {
     background: var(--color-paper);
-    border: 2px solid var(--color-ink);
-    border-radius: 14px;
-    box-shadow: 0 3px 0 var(--color-shadow);
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
     font-weight: 600;
   }
   .b-input:focus {
     outline: none;
-    box-shadow: 0 3px 0 var(--color-flame);
+    border-color: var(--color-sun);
   }
   .tag {
     display: inline-flex;
     align-items: center;
-    border: 2px solid var(--color-ink);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 50%, transparent);
     border-radius: 999px;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
   }
   .label {
     font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
+    font-weight: 700;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+    color: var(--color-muted);
+  }
+
+  /* ── Pilules (métadonnées) ── */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 1.5rem;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid color-mix(in srgb, var(--color-cream) 50%, transparent);
+    color: var(--color-ink);
+  }
+  .pill-amber {
+    background: var(--color-sun);
+    border-color: var(--color-sun);
+    color: var(--color-on);
+  }
+  /* Médaillon : pastille ronde menthe avec icône, libellé menthe. */
+  .pill-medal {
+    border-color: color-mix(in srgb, var(--color-mint) 45%, transparent);
+    color: var(--color-ocean);
+    padding-left: 0.15rem;
+  }
+  .medal {
+    display: inline-grid;
+    place-items: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 999px;
+    background: var(--color-mint);
+    color: var(--color-on);
+  }
+
+  /* ── Pilule de validation : contour crème net, pleine menthe une fois validée ── */
+  .pill-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-cream);
+    background: transparent;
+    color: var(--color-ink);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+  .pill-check:active {
+    transform: translateY(1px);
+  }
+  .pill-check[aria-pressed="true"],
+  .pill-check.is-done {
+    background: var(--color-mint);
+    border-color: var(--color-mint);
+    color: var(--color-on);
+  }
+  /* Pastilles de série ◯ → ● menthe. */
+  .set-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-cream);
+  }
+  .set-dot.is-done {
+    background: var(--color-mint);
+    border-color: var(--color-mint);
+  }
+  .set-dot.is-half {
+    background: linear-gradient(90deg, var(--color-mint) 50%, transparent 50%);
   }
 }
 
@@ -316,3 +385,9 @@ body {
 
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 .pt-safe { padding-top: env(safe-area-inset-top); }
+
+/* Dock flottant et chrono : léger flou sous le fond translucide (lisibilité au-dessus du contenu). */
+.bg-glass {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}

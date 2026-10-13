@@ -25,7 +25,7 @@ export function DemoPlayer({ ex }: { ex: Exercise }) {
     <section>
       <h3 className="label mb-2">Photo réelle</h3>
       {demo?.photos ? (
-        <div className="b-card overflow-hidden !shadow-[0_4px_0_var(--color-shadow)]">
+        <div className="b-card overflow-hidden">
           <button
             type="button"
             onClick={() => setPlaying((p) => !p)}
@@ -43,14 +43,14 @@ export function DemoPlayer({ ex }: { ex: Exercise }) {
               />
             ))}
             <span className="tag absolute left-2 top-2 h-6 bg-sun px-2 text-[10px]">{frame === 0 ? 'Position 1' : 'Position 2'}</span>
-            <span className="absolute bottom-2 right-2 grid h-8 w-8 place-items-center rounded-full border-2 border-ink bg-paper">
+            <span className="absolute bottom-2 right-2 grid h-8 w-8 place-items-center rounded-full border border-line bg-paper">
               {playing ? <Pause className="h-3.5 w-3.5" fill="currentColor" /> : <Play className="ml-0.5 h-3.5 w-3.5" fill="currentColor" />}
             </span>
           </button>
-          {demo.note && <p className="border-t-2 border-ink px-3 py-2 text-[12px] font-semibold leading-snug">{demo.note}</p>}
+          {demo.note && <p className="border-t border-line px-3 py-2 text-[12px] font-semibold leading-snug">{demo.note}</p>}
         </div>
       ) : (
-        <p className="flex items-center gap-2 border-2 border-dashed border-ink/50 px-3 py-3 text-[12px] font-semibold text-ink/75 rounded-xl">
+        <p className="flex items-center gap-2 border border-line px-3 py-3 text-[12px] font-semibold text-ink/75 rounded-lg">
           <ImageOff className="h-4 w-4 shrink-0" /> Pas de photo libre de droits pour cet exercice : le schéma ci-dessus et la vidéo montrent le mouvement.
         </p>
       )}

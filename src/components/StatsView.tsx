@@ -91,7 +91,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
     <section className="space-y-5">
       <header className="hero -mx-3 mb-6 px-4 pb-6 pt-5 md:-mx-6 md:px-8">
         <span className="tag h-7 bg-paper px-2.5 text-[12px]">Charges · volume · D+</span>
-        <h2 className="headline mt-3 text-[42px] sm:text-[56px]">Progression</h2>
+        <h2 className="display mt-3 text-[42px] sm:text-[56px]">Progression</h2>
         <p className="mt-2 text-[15px] font-bold">L’évolution de tes charges, semaine après semaine.</p>
       </header>
 
@@ -102,7 +102,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
               <k.icon className={`h-3.5 w-3.5 ${k.color}`} />
               {k.label}
             </p>
-            <p className="mt-1 text-[30px] font-black italic leading-none tabular-nums">{k.value}</p>
+            <p className="mt-1 text-[30px] font-black leading-none tabular-nums">{k.value}</p>
             <p className="text-xs text-ink/60">{k.sub}</p>
           </div>
         ))}
@@ -129,7 +129,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
           <button
             type="button"
             onClick={() => setTable((t) => !t)}
-            className={` p-1.5 ${table ? 'bg-sky border-2 border-ink' : 'text-ink/60'}`}
+            className={` p-1.5 ${table ? 'bg-sky border border-line' : 'text-ink/60'}`}
             aria-label="Afficher en tableau"
             aria-pressed={table}
           >
@@ -139,7 +139,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
         <select
           value={exId}
           onChange={(e) => setExId(e.target.value)}
-          className="mb-3 w-full h-11 border-2 border-ink bg-paper px-3 text-[13px] text-ink rounded-xl"
+          className="mb-3 w-full h-11 border border-line bg-paper px-3 text-[13px] text-ink rounded-lg"
         >
           {PROGRAM.map((sess) => {
             const exs = weighted.filter((e) => e.sessionId === sess.id)
@@ -211,7 +211,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
                     </span>
                     <span className="flex flex-wrap justify-end gap-1">
                       {sessions.map((p) => (
-                        <span key={p.id} className="border-2 border-ink bg-sun px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide rounded-xl">
+                        <span key={p.id} className="border border-line bg-sun px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide rounded-lg">
                           {p.short}
                         </span>
                       ))}

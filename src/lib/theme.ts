@@ -12,7 +12,7 @@ export function currentTheme(): Theme {
 
 export function applyTheme(t: Theme, notify = true) {
   document.documentElement.dataset.theme = t
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#cfe7e3' : '#1d1830')
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#f4efe6' : '#141122')
   try {
     localStorage.setItem(KEY, t)
   } catch {

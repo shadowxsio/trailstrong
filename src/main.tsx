@@ -50,7 +50,7 @@ function showUpdateBanner() {
   b.type = 'button'
   b.textContent = '✨ Nouvelle version prête · toucher pour mettre à jour'
   b.className =
-    'fade-up fixed left-1/2 top-[calc(10px+env(safe-area-inset-top))] z-[90] -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-sun px-4 py-2 text-[13px] font-extrabold text-ink shadow-[0_4px_0_var(--color-shadow)]'
+    'fade-up fixed left-1/2 top-[calc(10px+env(safe-area-inset-top))] z-[90] -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-sun px-4 py-2 text-[13px] font-extrabold text-ink'
   b.onclick = () => location.reload()
   document.body.appendChild(b)
 }

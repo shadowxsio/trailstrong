@@ -25,13 +25,13 @@ export function TimerBar() {
         <button type="button" onClick={timer.dismiss} aria-label="Fermer l’alerte de fin de repos" className="flash fixed inset-0 z-30 bg-mint/40" />
       )}
       <div
-        className="pointer-events-none fixed inset-x-0 z-40 px-3 bottom-[calc(72px+env(safe-area-inset-bottom))] md:bottom-4"
+        className="pointer-events-none fixed inset-x-0 z-40 px-3 bottom-[calc(80px+env(safe-area-inset-bottom))] md:bottom-4"
         data-noswipe
       >
         <div
           data-tour="timer"
-          className={`pointer-events-auto relative mx-auto flex h-[52px] max-w-xl items-center gap-1.5 overflow-hidden rounded-full border-2 border-ink pl-4 pr-1.5 shadow-[0_4px_0_var(--color-shadow)] transition-colors duration-200 ${
-            finished ? 'bg-mint' : 'bg-paper'
+          className={`pointer-events-auto relative mx-auto flex h-[52px] max-w-xl items-center gap-1.5 overflow-hidden rounded-lg border pl-3.5 pr-1.5 transition-colors duration-200 ${
+            finished ? 'border-mint bg-mint' : 'border-line bg-glass'
           }`}
         >
           <button
@@ -42,10 +42,10 @@ export function TimerBar() {
           >
             {active ? <RotateCcw className="h-4 w-4 text-ink/60" strokeWidth={2.5} /> : <TimerIcon className="h-4 w-4" strokeWidth={2.5} />}
             <span className="leading-none">
-              <span role="timer" className={`block font-display text-[21px] tabular-nums ${t.running || finished ? 'text-ink' : 'text-ink/60'}`}>
+              <span role="timer" className={`block display text-[22px] tabular-nums ${t.running || finished ? 'text-ink' : 'text-ink/60'}`}>
                 {finished ? '00:00' : fmt(t.left)}
               </span>
-              <span className={`text-[9px] font-extrabold uppercase tracking-wide ${t.label ? 'text-flame' : 'text-ink/60'}`}>
+              <span className={`text-[9px] font-bold uppercase tracking-[0.14em] ${t.label ? 'text-flame' : 'text-muted'}`}>
                 {finished ? (t.label ? `${t.label} : go !` : 'Repos terminé !') : t.label ? t.label : t.running ? 'Récupération' : active ? 'En pause' : 'Repos'}
               </span>
             </span>
@@ -57,8 +57,8 @@ export function TimerBar() {
                 key={p}
                 type="button"
                 onClick={() => timer.preset(p)}
-                className={`h-8 rounded-full border-2 px-2 text-[12px] font-black transition duration-150 active:translate-y-px ${
-                  t.duration === p && active ? 'border-ink bg-sun' : 'border-transparent hover:border-ink'
+                className={`pill h-8 px-2.5 text-[11px] transition-colors duration-150 active:translate-y-px ${
+                  t.duration === p && active ? 'pill-amber' : 'border-transparent hover:border-cream'
                 }`}
               >
                 {p}s
@@ -67,7 +67,7 @@ export function TimerBar() {
             <button
               type="button"
               onClick={() => timer.adjust(30)}
-              className="h-8 rounded-full border-2 border-transparent px-2 text-[12px] font-black transition duration-150 hover:border-ink active:translate-y-px"
+              className="pill h-8 border-transparent px-2.5 text-[11px] transition-colors duration-150 hover:border-cream active:translate-y-px"
             >
               +30s
             </button>
@@ -77,16 +77,16 @@ export function TimerBar() {
             type="button"
             onClick={timer.toggle}
             aria-label={t.running ? 'Pause' : 'Démarrer'}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full border-2 border-ink bg-flame text-ink transition duration-150 active:scale-90"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-flame text-on transition duration-150 active:scale-90"
           >
             {t.running ? <Pause className="h-4 w-4" fill="currentColor" /> : <Play className="ml-0.5 h-4 w-4" fill="currentColor" />}
           </button>
 
           {/* Progression 3 px */}
-          <span className="absolute inset-x-0 bottom-0 h-[3px] overflow-hidden bg-ink/10">
+          <span className="absolute inset-x-0 bottom-0 h-[3px] overflow-hidden bg-line">
             <span
               key={t.endAt ?? 'still'}
-              className={`block h-full origin-left will-change-transform ${finished ? 'bg-leaf' : 'bg-flame'}`}
+              className={`block h-full origin-left will-change-transform ${finished ? 'bg-leaf' : 'bg-sun'}`}
               style={drain ?? { transform: `scaleX(${finished ? 1 : active ? pct : 0})` }}
             />
           </span>

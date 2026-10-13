@@ -29,7 +29,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
       <div
-        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border-[2.5px] border-b-0 border-ink bg-paper-2 md:max-h-none md:w-[480px] md:border-b-[2.5px] md:border-r-0 rounded-t-[26px] md:rounded-none md:rounded-l-[26px]"
+        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 md:max-h-none md:w-[480px] md:border-b md:border-r-0 rounded-t-lg md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Bilan de séance"
@@ -37,7 +37,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
       >
         <header className="hero flex items-start justify-between !border-t-0 px-4 pb-4 pt-4">
           <div>
-            <p className="tag h-6 -rotate-1 bg-sun px-2 text-[10px]">Bilan · {session.short}</p>
+            <p className="tag h-6 bg-sun px-2 text-[10px]">Bilan · {session.short}</p>
             <h2 className="headline mt-2 text-[28px]">Séance terminée</h2>
           </div>
           <button type="button" onClick={onClose} className="b-btn grid h-11 w-11 place-items-center rounded-full" aria-label="Fermer">
@@ -53,13 +53,13 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
             <Stat icon={<Clock className="h-4 w-4" strokeWidth={2.5} />} label="Durée" value={r.minutes ? `${r.minutes}′` : '—'} sub="environ" />
           </section>
           {r.records.length > 0 && (
-            <p className="flex items-start gap-2 border-2 border-ink bg-sun px-3 py-2 text-[13px] font-bold leading-snug rounded-xl">
+            <p className="flex items-start gap-2 border border-line bg-sun px-3 py-2 text-[13px] font-bold leading-snug rounded-lg">
               <Trophy className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
               <span>Record{r.records.length > 1 ? 's' : ''} : {r.records.map((x) => `${x.name} (${x.weight} lbs)`).join(', ')}</span>
             </p>
           )}
           {r.asym.length > 0 && (
-            <p className="border-2 border-dashed border-ink/60 px-3 py-2 text-[12px] font-bold leading-snug rounded-xl">
+            <p className="border border-line px-3 py-2 text-[12px] font-bold leading-snug rounded-lg">
               Écart gauche / droite : {r.asym.map((a) => `${a.name} ${a.pct > 0 ? 'D' : 'G'} +${Math.abs(a.pct)} %`).join(' · ')}. Le côté faible passera en premier la prochaine fois.
             </p>
           )}
@@ -75,7 +75,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
                   role="radio"
                   aria-checked={log.rpe === v}
                   onClick={() => set({ rpe: v })}
-                  className={`h-10 border-2 border-ink text-[14px] font-black rounded-xl ${log.rpe === v ? `${scaleBg(v - 1)} shadow-[0_2px_0_var(--color-shadow)]` : 'bg-paper'}`}
+                  className={`h-10 border border-line text-[14px] font-black rounded-lg ${log.rpe === v ? `${scaleBg(v - 1)}` : 'bg-paper'}`}
                 >
                   {v}
                 </button>
@@ -88,7 +88,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
                   ['ankleAfter', '⚓ Cheville'],
                 ] as const
               ).map(([k, label]) => (
-                <label key={k} className="border-2 border-ink bg-paper px-2 py-1.5 rounded-xl">
+                <label key={k} className="border border-line bg-paper px-2 py-1.5 rounded-lg">
                   <span className="flex justify-between text-[12px] font-black uppercase tracking-wide">
                     {label} après <span className="not-italic">{c[k] ?? '–'}/10</span>
                   </span>
@@ -117,7 +117,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
           {/* Récupération */}
           <section>
             <h3 className="label mb-2">Pour bien récupérer</h3>
-            <ul className="divide-y-2 divide-ink/15 border-2 border-ink bg-paper rounded-xl">
+            <ul className="divide-y-2 divide-ink/15 border border-line bg-paper rounded-lg">
               {tips.map((t) => (
                 <li key={t.title} className="flex gap-3 px-3 py-2.5">
                   <span className="text-[20px] leading-none">{t.icon}</span>
@@ -133,7 +133,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
         </div>
 
         {routine.length > 0 && (
-          <footer className="border-t-[2.5px] border-ink p-3">
+          <footer className="border-t border-line p-3">
             <button type="button" onClick={onCooldown} className="b-btn flex h-12 w-full items-center justify-center gap-2 bg-mint text-[14px] uppercase tracking-wide">
               {log.cooldownAt ? '✓ Retour au calme fait · refaire' : `🧘 Retour au calme · ${Math.round(routineSeconds(routine) / 60)} min`}
             </button>
@@ -147,7 +147,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
 
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub: string }) {
   return (
-    <div className="border-2 border-ink bg-paper px-2.5 py-2 rounded-xl">
+    <div className="border border-line bg-paper px-2.5 py-2 rounded-lg">
       <p className="label flex items-center gap-1">
         {icon} {label}
       </p>

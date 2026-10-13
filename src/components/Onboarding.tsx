@@ -53,8 +53,8 @@ export function Onboarding({
   if (step === -1)
     return (
       <Frame>
-        <p className="tag h-7 -rotate-1 bg-sun px-2 text-[11px]">Bienvenue</p>
-        <h1 className="headline mt-4 text-[34px]">Salut {defaultName || 'toi'} !</h1>
+        <p className="tag h-7 bg-sun px-2 text-[11px]">Bienvenue</p>
+        <h1 className="display mt-4 text-[34px]">Salut {defaultName || 'toi'} !</h1>
         <p className="mt-3 text-[15px] font-semibold leading-snug">
           En 7 questions, je te prépare des séances de renforcement adaptées à ton sport, tes objectifs et ton matériel, avec schémas, photos, tempo guidé et retour au calme.
         </p>
@@ -76,7 +76,7 @@ export function Onboarding({
     <Frame>
       <div className="flex items-center gap-1.5" aria-label={`Étape ${step + 1} sur ${STEPS.length}`}>
         {STEPS.map((s, i) => (
-          <span key={s} className={`h-2 flex-1 border-2 border-ink rounded-xl ${i <= step ? 'bg-flame' : 'bg-paper'}`} />
+          <span key={s} className={`h-2 flex-1 border border-line rounded-lg ${i <= step ? 'bg-flame' : 'bg-paper'}`} />
         ))}
       </div>
       <p className="label mt-3">
@@ -184,7 +184,7 @@ function Preview({ program }: { program: UserProgram }) {
   return (
     <div>
       <Q sub="Tu pourras retirer des exercices et en ajouter d’autres (bouton « Ajouter un exercice » en bas de chaque séance : fiches complètes de la bibliothèque, ou 800 exercices du catalogue en fiche simplifiée). Le questionnaire se refait depuis le Menu.">Ton programme</Q>
-      <div className="mb-4 flex items-start gap-3 rounded-2xl border-2 border-ink bg-sun px-3 py-3" role="note">
+      <div className="mb-4 flex items-start gap-3 rounded-lg border border-line bg-sun px-3 py-3" role="note">
         <Stethoscope className="mt-0.5 h-5 w-5 shrink-0" strokeWidth={2.5} />
         <p className="text-[13px] font-semibold leading-snug">
           <b className="block text-[14px] font-extrabold">Programme généré automatiquement</b>
@@ -193,8 +193,8 @@ function Preview({ program }: { program: UserProgram }) {
       </div>
       <div className="space-y-4">
         {sessions.map((s) => (
-          <section key={s.id} className="b-card overflow-hidden !shadow-[0_3px_0_var(--color-shadow)]">
-            <header className={`border-b-2 border-ink px-3 py-2 ${SESSION_META[s.id].bg}`}>
+          <section key={s.id} className="b-card overflow-hidden">
+            <header className={`border-b border-line px-3 py-2 ${SESSION_META[s.id].bg}`}>
               <p className="text-[15px] font-black uppercase tracking-wide leading-tight">{s.title}</p>
               <p className="text-[12px] font-bold">
                 {s.subtitle} · {s.duration}
@@ -204,9 +204,9 @@ function Preview({ program }: { program: UserProgram }) {
               {s.exercises.map((ex) => {
                 const d = ex.diagram ?? DIAGRAM_OF[ex.id]
                 return (
-                  <li key={ex.id} className="border-2 border-ink bg-paper rounded-xl">
+                  <li key={ex.id} className="border border-line bg-paper rounded-lg">
                     {d && (
-                      <div className="diagram-bg aspect-[5/4] border-b-2 border-ink !border-t-0">
+                      <div className="diagram-bg aspect-[5/4] border-b border-line !border-t-0">
                         <ExerciseDiagram id={d} />
                       </div>
                     )}
@@ -219,7 +219,7 @@ function Preview({ program }: { program: UserProgram }) {
               })}
             </ul>
             {routineOf(s).length > 0 && (
-              <p className="border-t-2 border-ink px-3 py-1.5 text-[11px] font-bold">
+              <p className="border-t border-line px-3 py-1.5 text-[11px] font-bold">
                 🧘 Retour au calme : {routineOf(s)
                   .map((r) => r.name)
                   .join(', ')}
@@ -235,7 +235,7 @@ function Preview({ program }: { program: UserProgram }) {
 function Frame({ children }: { children: ReactNode }) {
   return (
     <div className="hero pt-safe pb-safe flex min-h-dvh flex-col items-center !border-0 px-4 py-8">
-      <div className="mb-6 -rotate-2 logo-patch text-[24px]">
+      <div className="mb-6 logo-patch text-[24px]">
           <span>TrailStrong</span>
         </div>
       <div className="b-card w-full max-w-[520px] p-5">{children}</div>
@@ -246,7 +246,7 @@ function Frame({ children }: { children: ReactNode }) {
 function Q({ children, sub }: { children: ReactNode; sub?: string }) {
   return (
     <div className="mb-3 mt-5">
-      <h2 className="font-display text-[22px] leading-tight">{children}</h2>
+      <h2 className="headline text-[22px]">{children}</h2>
       {sub && <p className="mt-1 text-[13px] font-semibold text-ink/70">{sub}</p>}
     </div>
   )

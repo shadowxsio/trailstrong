@@ -95,7 +95,7 @@ export function GuidedTour({ onClose }: { onClose: () => void }) {
       {/* Projecteur : tout l'écran assombri sauf l'élément présenté. */}
       {rect ? (
         <div
-          className="pointer-events-none fixed rounded-2xl border-[3px] border-sun transition-all duration-300"
+          className="pointer-events-none fixed rounded-lg border border-sun transition-all duration-300"
           style={{
             left: rect.left - pad,
             top: rect.top - pad,
@@ -113,10 +113,10 @@ export function GuidedTour({ onClose }: { onClose: () => void }) {
       <div className="fixed inset-x-0 mx-auto w-[calc(100%-32px)] max-w-sm" style={bubbleStyle}>
         <div className="b-card fade-up p-4" key={i}>
           <div className="flex items-start gap-2">
-            <p className="tag h-6 -rotate-2 bg-sun px-2 text-[10px]">
+            <p className="tag h-6 bg-sun px-2 text-[10px]">
               {i + 1}/{steps.length}
             </p>
-            <button type="button" onClick={onClose} aria-label="Passer la visite" className="ml-auto grid h-8 w-8 place-items-center rounded-full border-2 border-ink">
+            <button type="button" onClick={onClose} aria-label="Passer la visite" className="ml-auto grid h-8 w-8 place-items-center rounded-full border border-line">
               <X className="h-4 w-4" strokeWidth={3} />
             </button>
           </div>

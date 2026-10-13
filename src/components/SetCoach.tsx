@@ -229,7 +229,7 @@ export function SetCoach({ name, cadence, sides, target, setLabel, rest, onSideD
 
   return createPortal(
     <div className="pt-safe pb-safe fixed inset-0 z-[70] flex flex-col bg-paper" role="dialog" aria-label={`Coach : ${name}`} data-noswipe>
-      <header className="flex items-center gap-2 border-b-[2.5px] border-ink bg-paper px-3 py-2.5">
+      <header className="flex items-center gap-2 border-b border-line bg-paper px-3 py-2.5">
         <div className="min-w-0 flex-1">
           <p className="truncate text-[12px] font-extrabold uppercase tracking-wide text-ink/65">
             {setLabel}
@@ -265,7 +265,7 @@ export function SetCoach({ name, cadence, sides, target, setLabel, rest, onSideD
         <p className="headline text-[44px] leading-none min-[400px]:text-[52px]" aria-live="polite">
           {title}
         </p>
-        <p className="mt-2 font-mono text-[120px] font-black leading-none tabular-nums text-ink min-[400px]:text-[150px]" role="timer">
+        <p className="mt-2 display text-[104px] leading-none tabular-nums text-ink min-[400px]:text-[128px]" role="timer">
           {big}
         </p>
         <p className="mt-2 text-[18px] font-black uppercase tracking-wide">{sub}</p>
@@ -276,8 +276,8 @@ export function SetCoach({ name, cadence, sides, target, setLabel, rest, onSideD
               <li
                 key={i}
                 style={{ flexGrow: p.s }}
-                className={`basis-0 border-2 border-ink px-1 py-1.5 text-[11px] font-extrabold uppercase transition-transform duration-150 rounded-xl ${BG[p.kind]} ${
-                  i === phaseIdx ? '-translate-y-1 shadow-[0_3px_0_var(--color-shadow)]' : 'opacity-60'
+                className={`basis-0 border border-line px-1 py-1.5 text-[11px] font-extrabold uppercase transition-transform duration-150 rounded-lg ${BG[p.kind]} ${
+                  i === phaseIdx ? '-translate-y-1' : 'opacity-60'
                 }`}
               >
                 {p.label}
@@ -288,7 +288,7 @@ export function SetCoach({ name, cadence, sides, target, setLabel, rest, onSideD
         )}
       </main>
 
-      <div className="h-2 border-y-2 border-ink bg-paper">
+      <div className="h-2 border-y border-line bg-paper">
         <div className="h-full bg-flame transition-[width] duration-100 ease-linear" style={{ width: `${Math.min(1, Math.max(0, frac)) * 100}%` }} />
       </div>
 

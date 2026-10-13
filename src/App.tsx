@@ -1,7 +1,7 @@
-import { BarChart3, LayoutGrid, Menu, Search } from 'lucide-react'
+import { BarChart3, LayoutGrid, Menu, Search, type LucideIcon } from 'lucide-react'
 import { Suspense, lazy, useEffect, useMemo, useRef, useState, type ComponentProps, type TouchEvent } from 'react'
 import { Catalog, type Scope } from './components/Catalog'
-import { SESSION_META } from './components/meta'
+import { SESSION_META, sessionIcon } from './components/meta'
 import { LoginScreen } from './components/LoginScreen'
 import type { SettingsSheet as SettingsSheetType } from './components/SettingsSheet'
 import { TimerBar } from './components/TimerBar'
@@ -22,12 +22,12 @@ const SandboxApp = lazy(() => import('./SandboxApp'))
 
 export type View = Scope | 'stats'
 
-type Tab = { id: View; label: string; short: string; emoji?: string; bg: string }
+type Tab = { id: View; label: string; short: string; icon: LucideIcon }
 
 /** Onglets : dossiers colorés en haut (desktop) / dock en bas (mobile), d'après le programme du compte. */
 function tabsOf(program: Session[]): Tab[] {
   return [
-    { id: 'all', label: 'Tout', short: 'Tout', bg: 'bg-paper' },
+    { id: 'all', label: 'Tout', short: 'Tout', icon: LayoutGrid },
     // L'Activation est intégrée en tête de chaque séance : pas d'onglet dédié.
     ...program
       .filter((s) => s.id !== 'activation' && s.exercises.length > 0)
@@ -35,11 +35,9 @@ function tabsOf(program: Session[]): Tab[] {
         id: s.id as View,
         label: s.short,
         short: s.short.length > 9 ? SESSION_META[s.id].short : s.short,
-        // L'emplacement « tapis » peut accueillir une Séance C (gainage…) dans un programme généré.
-        emoji: s.id === 'tapis' && !/tapis/i.test(s.short) ? '🧱' : SESSION_META[s.id].emoji,
-        bg: SESSION_META[s.id].bg,
+        icon: sessionIcon(s.id, s.short),
       })),
-    { id: 'stats', label: 'Progression', short: 'Stats', bg: 'bg-sky' },
+    { id: 'stats', label: 'Progression', short: 'Stats', icon: BarChart3 },
   ]
 }
 
@@ -154,44 +152,48 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
   return (
     <div className="min-h-dvh" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      {/* ── En-tête ── */}
+      {/* ── En-tête : logo + sous-titre à gauche, accès rapides compacts à droite ── */}
       <header className="pt-safe">
-        <div className="mx-auto flex max-w-6xl items-center gap-2.5 px-3 pb-4 pt-4 md:px-6">
-          <button type="button" onClick={() => setView('all')} className="logo-patch -rotate-2 text-[19px] min-[400px]:text-[22px]" aria-label="Accueil">
-            <span>TrailStrong</span>
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 pb-3 pt-4 md:px-6">
+          <button type="button" onClick={() => setView('all')} className="logo-patch" aria-label="Accueil">
+            <span className="text-[24px] min-[400px]:text-[27px]">TrailStrong</span>
+            <span className="kicker mt-1.5">Séances &amp; préparation</span>
           </button>
           <button
             type="button"
             onClick={focusSearch}
             aria-label="Rechercher"
-            className="b-btn ml-auto grid h-12 w-12 shrink-0 place-items-center rounded-full"
+            className="b-btn ml-auto grid h-10 w-10 shrink-0 place-items-center"
           >
-            <Search className="h-5 w-5" strokeWidth={2.8} />
+            <Search className="h-[18px] w-[18px]" strokeWidth={2.2} />
           </button>
-          <button type="button" onClick={() => setMenu(true)} data-tour="menu" className="b-btn flex h-12 shrink-0 items-center gap-1.5 bg-sun px-3 text-[15px] uppercase tracking-wide min-[400px]:px-4">
-            <Menu className="h-5 w-5" strokeWidth={3} /> Menu
+          <button type="button" onClick={() => setMenu(true)} data-tour="menu" className="b-btn flex h-10 shrink-0 items-center gap-1.5 px-3 text-[12px] uppercase tracking-[0.14em]">
+            <Menu className="h-[18px] w-[18px]" strokeWidth={2.2} /> Menu
           </button>
         </div>
 
-        {/* Onglets-dossiers (desktop) */}
-        <nav className="mx-auto hidden max-w-6xl items-end gap-1.5 px-6 md:flex" aria-label="Onglets" data-tour="tabs">
-          {TABS.map((t) => {
-            const active = t.id === view
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setView(t.id)}
-                aria-current={active ? 'page' : undefined}
-                className={`-mb-[2.5px] rounded-t-xl border-[2.5px] border-ink px-4 text-[13px] font-black uppercase tracking-wide transition-all duration-150 ${
-                  active ? `h-12 border-b-hero bg-hero` : `h-10 ${t.bg} hover:h-11`
-                }`}
-              >
-                {t.emoji && <span className="mr-1 not-italic">{t.emoji}</span>}
-                {t.label}
-              </button>
-            )
-          })}
+        {/* Onglets (desktop) : barre à filet, onglet actif souligné ambre */}
+        <nav className="mx-auto hidden max-w-6xl px-6 md:block" aria-label="Onglets" data-tour="tabs">
+          <ul className="flex border-b border-line">
+            {TABS.map((t, i) => {
+              const active = t.id === view
+              return (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    onClick={() => setView(t.id)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`-mb-px flex h-11 items-center gap-2 border-b-2 px-4 text-[12px] font-bold uppercase tracking-[0.14em] transition-colors duration-150 ${
+                      active ? 'border-sun text-ink' : 'border-transparent text-muted hover:text-ink'
+                    }`}
+                  >
+                    <span className="tabular-nums text-[10px] text-muted">{String(i).padStart(2, '0')}</span>
+                    {t.label}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
         </nav>
       </header>
 
@@ -207,27 +209,24 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
       <TimerBar />
 
-      {/* ── Dock mobile ── */}
-      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t-[2.5px] border-ink bg-paper md:hidden" aria-label="Onglets" data-noswipe data-tour="tabs">
-        <ul className="grid" style={{ gridTemplateColumns: `repeat(${TABS.length}, minmax(0, 1fr))` }}>
+      {/* ── Dock flottant (mobile) : bulle ambre sur l'onglet actif ── */}
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 px-3 md:hidden" aria-label="Onglets" data-noswipe data-tour="tabs">
+        <ul className="mb-2 grid rounded-lg border border-line bg-glass p-1" style={{ gridTemplateColumns: `repeat(${TABS.length}, minmax(0, 1fr))` }}>
           {TABS.map((t) => {
             const active = t.id === view
+            const Icon = t.icon
             return (
               <li key={t.id}>
                 <button
                   type="button"
                   onClick={() => setView(t.id)}
                   aria-current={active ? 'page' : undefined}
-                  className="flex h-[60px] w-full flex-col items-center justify-center gap-0.5 px-0.5"
+                  className="flex h-[52px] w-full flex-col items-center justify-center gap-1 px-0.5"
                 >
-                  <span
-                    className={`grid h-8 w-11 place-items-center rounded-full border-2 text-[16px] transition-all duration-150 ${
-                      active ? `${t.bg} -translate-y-0.5 border-ink shadow-[0_2px_0_var(--color-shadow)]` : 'border-transparent'
-                    }`}
-                  >
-                    {t.id === 'all' ? <LayoutGrid className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.id === 'stats' ? <BarChart3 className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.emoji}
+                  <span className={`grid h-7 w-10 place-items-center rounded-full transition-colors duration-150 ${active ? 'bg-sun text-on' : 'text-muted'}`}>
+                    <Icon className="h-[17px] w-[17px]" strokeWidth={2.2} />
                   </span>
-                  <span className={`truncate text-[10px] uppercase tracking-wide ${active ? 'font-black text-ink' : 'font-extrabold text-ink/55'}`}>{t.short}</span>
+                  <span className={`truncate text-[9px] font-bold uppercase tracking-[0.12em] ${active ? 'text-ink' : 'text-muted'}`}>{t.short}</span>
                 </button>
               </li>
             )

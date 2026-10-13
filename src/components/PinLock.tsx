@@ -98,16 +98,16 @@ export function PinLock({
           <ArrowLeft className="h-4 w-4" strokeWidth={3} /> Retour
         </button>
       )}
-      <div className="mb-7 -rotate-2 logo-patch text-[28px]">
+      <div className="mb-7 logo-patch text-[28px]">
           <span>TrailStrong</span>
         </div>
 
       <div className="b-card w-full max-w-[340px] p-5">
         <div className="flex items-center justify-between gap-2">
-          <span className="tag h-7 -rotate-1 bg-sun px-2 text-[11px]">
+          <span className="tag h-7 bg-sun px-2 text-[11px]">
             <Lock className="mr-1 h-3 w-3" strokeWidth={3} /> {overlay ? 'Admin' : 'Accès privé'}
           </span>
-          <span className="tag h-7 rotate-1 bg-mint px-2 text-[11px]">chiffré</span>
+          <span className="tag h-7 bg-mint px-2 text-[11px]">chiffré</span>
         </div>
 
         <h1 className="headline mt-5 text-[26px]">{title}</h1>
@@ -117,7 +117,7 @@ export function PinLock({
           {Array.from({ length: slots }).map((_, i) => (
             <span
               key={i}
-              className={`h-4 w-4 rounded-full border-[2.5px] border-ink transition-all duration-150 ${
+              className={`h-4 w-4 rounded-full border border-line transition-all duration-150 ${
                 error ? 'bg-[#ef4444]' : i < pin.length ? 'scale-110 bg-flame' : 'bg-paper'
               }`}
             />
@@ -134,7 +134,7 @@ export function PinLock({
                 type="button"
                 onClick={() => press(k)}
                 aria-label={k === 'del' ? 'Effacer' : k}
-                className={`b-btn grid h-14 place-items-center text-[24px] font-black italic ${k === 'del' ? 'bg-peach' : ''}`}
+                className={`b-btn grid h-14 place-items-center text-[24px] font-black ${k === 'del' ? 'bg-peach' : ''}`}
               >
                 {k === 'del' ? <Delete className="h-5 w-5" strokeWidth={2.5} /> : k}
               </button>
@@ -151,7 +151,7 @@ export function PinLock({
           {wait > 0 ? `Bloqué · ${wait} s` : 'Déverrouiller'}
         </button>
         {(hint || wait > 0) && (
-          <p className="mt-3 border-2 border-ink bg-rose px-3 py-2 text-center text-[12px] font-bold rounded-xl" role="alert">
+          <p className="mt-3 border border-line bg-rose px-3 py-2 text-center text-[12px] font-bold rounded-lg" role="alert">
             {wait > 0 ? `Trop d’essais : réessaie dans ${wait} s.` : hint}
           </p>
         )}

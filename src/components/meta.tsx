@@ -14,6 +14,9 @@ import {
   MoveHorizontal,
   MoveVertical,
   CircleDot,
+  BrickWall,
+  Flame,
+  Scale,
   Repeat,
   Sparkles,
   type LucideIcon,
@@ -27,13 +30,16 @@ export const TAG_META: Record<FocusTag, { label: string; emoji: string }> = {
   glutes: { label: 'Fessiers', emoji: '🍑' },
 }
 
-/** Couleur d'étiquette par séance (onglets et bandeaux de section). */
-export const SESSION_META: Record<SessionId, { label: string; short: string; emoji: string; bg: string }> = {
-  activation: { label: 'Activation', short: 'Activ.', emoji: '🔥', bg: 'bg-sun' },
-  seanceA: { label: 'Séance A', short: 'Séance A', emoji: '🦵', bg: 'bg-peach' },
-  seanceB: { label: 'Séance B', short: 'Séance B', emoji: '⚖️', bg: 'bg-mint' },
-  tapis: { label: 'Tapis D+', short: 'Tapis', emoji: '⛰️', bg: 'bg-lilac' },
+/** Identité de chaque séance : libellés, pictogramme (onglets, dock) et couleur d'accent. */
+export const SESSION_META: Record<SessionId, { label: string; short: string; emoji: string; bg: string; icon: LucideIcon }> = {
+  activation: { label: 'Activation', short: 'Activ.', emoji: '🔥', bg: 'bg-sun', icon: Flame },
+  seanceA: { label: 'Séance A', short: 'Séance A', emoji: '🦵', bg: 'bg-peach', icon: Footprints },
+  seanceB: { label: 'Séance B', short: 'Séance B', emoji: '⚖️', bg: 'bg-mint', icon: Scale },
+  tapis: { label: 'Tapis D+', short: 'Tapis', emoji: '⛰️', bg: 'bg-lilac', icon: Mountain },
 }
+
+/** Pictogramme d'une séance (l'emplacement « tapis » peut accueillir une Séance C de gainage). */
+export const sessionIcon = (id: SessionId, short: string): LucideIcon => (id === 'tapis' && !/tapis/i.test(short) ? BrickWall : SESSION_META[id].icon)
 
 const ICONS: Record<IconName, LucideIcon> = {
   Footprints,
@@ -77,9 +83,25 @@ export const DIR_META: Record<Direction, { icon: LucideIcon; label: string }> = 
   hold: { icon: CircleDot, label: 'stable' },
 }
 
-export function Pill({ children, tone = 'paper' }: { children: ReactNode; tone?: 'paper' | 'sun' | 'sky' }) {
-  const bg = tone === 'sun' ? 'bg-sun' : tone === 'sky' ? 'bg-sky' : 'bg-paper'
+/**
+ * Pilule de métadonnée :
+ * - `amber` : remplie ocre, texte sombre (tags actifs : « 2 séries », « Aujourd'hui ») ;
+ * - `neutral` : contour fin crème (« 20 reps », « Repos 30s », « Mur »).
+ * (Les anciens tons `sun` / `sky` / `paper` restent acceptés.)
+ */
+export function Pill({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'amber' | 'paper' | 'sun' | 'sky' }) {
+  const cls = tone === 'amber' || tone === 'sun' ? 'pill pill-amber' : tone === 'sky' ? 'pill pill-medal pl-2.5' : 'pill'
+  return <span className={cls}>{children}</span>
+}
+
+/** Médaillon : pastille ronde menthe + icône, pour le type d'exercice ou le muscle ciblé. */
+export function Medal({ icon: Icon, children }: { icon: LucideIcon; children: ReactNode }) {
   return (
-    <span className={`inline-flex h-6 items-center whitespace-nowrap border-2 border-ink px-2 text-[11px] font-bold text-ink rounded-xl ${bg}`}>{children}</span>
+    <span className="pill pill-medal">
+      <span className="medal" aria-hidden>
+        <Icon className="h-2.5 w-2.5" strokeWidth={3} />
+      </span>
+      {children}
+    </span>
   )
 }
