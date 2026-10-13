@@ -11,7 +11,7 @@ npm ci
 npm run dev              # http://localhost:5173 (PIN local : 2026 ; /#schemas = planche des schémas)
 npm run typecheck        # tsc -b
 npm run build            # build de production → dist/ (ignoré par git)
-npm run build:preview    # build d'aperçu → dist-preview (stockage isolé, sans service worker)
+TS_PREVIEW=1 npm run build:preview  # build d'aperçu → dist-preview (stockage isolé, sans SW, sans Firebase)
 npm run test:e2e         # tests Playwright sur dist-preview (lance vite preview tout seul)
 ```
 
@@ -65,5 +65,7 @@ Une modification de `deploy.yml` ne prend effet qu'**après fusion** (workflow_r
   `scripts/build-catalog.mjs` (traductions dans `scripts/catalog-fr.json`).
 - **Sécurité** : CSP stricte injectée au build (`csp()` dans `vite.config.ts`) ; ajouter tout
   nouveau domaine externe à la politique. Jamais de `.env` ni de secret dans le dépôt.
+- **Firebase** : config web publique (projet `trailstrong-646d0`) en valeurs par défaut dans
+  `src/lib/firebaseConfig.ts`, active seulement pour le build de prod (jamais en dev ni en aperçu).
 - Pas d'IA intégrée à l'app (retirée volontairement).
 - Le programme généré est un repère, pas un avis médical : garder les mentions « voir un physio ».
