@@ -30,8 +30,8 @@ export function TimerBar() {
       >
         <div
           data-tour="timer"
-          className={`pointer-events-auto relative mx-auto flex h-[52px] max-w-xl items-center gap-1.5 overflow-hidden rounded-lg border pl-3.5 pr-1.5 transition-colors duration-200 ${
-            finished ? 'border-mint bg-mint' : 'border-line bg-glass'
+          className={`pointer-events-auto relative mx-auto flex h-[58px] max-w-xl items-center gap-1.5 overflow-hidden rounded-2xl pl-4 pr-2.5 shadow-xl transition-colors duration-200 ${
+            finished ? 'border border-mint bg-mint' : 'alpine-glass'
           }`}
         >
           <button
@@ -42,7 +42,7 @@ export function TimerBar() {
           >
             {active ? <RotateCcw className="h-4 w-4 text-ink/60" strokeWidth={2.5} /> : <TimerIcon className="h-4 w-4" strokeWidth={2.5} />}
             <span className="leading-none">
-              <span role="timer" className={`block display text-[22px] tabular-nums ${t.running || finished ? 'text-ink' : 'text-ink/60'}`}>
+              <span role="timer" className={`block display text-[19px] tabular-nums ${t.running || finished ? 'text-ink' : 'text-ink/60'}`}>
                 {finished ? '00:00' : fmt(t.left)}
               </span>
               <span className={`text-[9px] font-bold uppercase tracking-[0.14em] ${t.label ? 'text-flame' : 'text-muted'}`}>
@@ -58,7 +58,7 @@ export function TimerBar() {
                 type="button"
                 onClick={() => timer.preset(p)}
                 className={`pill h-8 px-2.5 text-[11px] transition-colors duration-150 active:translate-y-px ${
-                  t.duration === p && active ? 'pill-amber' : 'border-transparent hover:border-cream'
+                  t.duration === p && active ? 'pill-amber' : 'border-transparent bg-transparent hover:border-cream'
                 }`}
               >
                 {p}s
@@ -67,7 +67,7 @@ export function TimerBar() {
             <button
               type="button"
               onClick={() => timer.adjust(30)}
-              className="pill h-8 border-transparent px-2.5 text-[11px] transition-colors duration-150 hover:border-cream active:translate-y-px"
+              className="pill h-8 border-transparent bg-transparent px-2.5 text-[11px] transition-colors duration-150 hover:border-cream active:translate-y-px"
             >
               +30s
             </button>
@@ -77,7 +77,7 @@ export function TimerBar() {
             type="button"
             onClick={timer.toggle}
             aria-label={t.running ? 'Pause' : 'Démarrer'}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-flame text-on transition duration-150 active:scale-90"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-cream bg-flame text-on transition duration-150 active:scale-90"
           >
             {t.running ? <Pause className="h-4 w-4" fill="currentColor" /> : <Play className="ml-0.5 h-4 w-4" fill="currentColor" />}
           </button>

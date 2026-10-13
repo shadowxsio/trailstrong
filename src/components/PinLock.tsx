@@ -151,7 +151,7 @@ export function PinLock({
           {wait > 0 ? `Bloqué · ${wait} s` : 'Déverrouiller'}
         </button>
         {(hint || wait > 0) && (
-          <p className="mt-3 border border-line bg-rose px-3 py-2 text-center text-[12px] font-bold rounded-lg" role="alert">
+          <p className="mt-3 border border-line bg-rose px-3 py-2 text-center text-[12px] font-bold rounded-xl" role="alert">
             {wait > 0 ? `Trop d’essais : réessaie dans ${wait} s.` : hint}
           </p>
         )}

@@ -80,7 +80,7 @@ export function LoginScreen({ onUnlock, onGoogleToken }: { onUnlock: () => void;
         </div>
         {status === 'verifying' && <p className="mt-3 text-center text-[13px] font-bold">Vérification du compte…</p>}
         {error && (
-          <p className="mt-3 border border-line bg-rose px-3 py-2 text-[12px] font-bold rounded-lg" role="alert">
+          <p className="mt-3 border border-line bg-rose px-3 py-2 text-[12px] font-bold rounded-xl" role="alert">
             {error}
           </p>
         )}

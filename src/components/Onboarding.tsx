@@ -76,7 +76,7 @@ export function Onboarding({
     <Frame>
       <div className="flex items-center gap-1.5" aria-label={`Étape ${step + 1} sur ${STEPS.length}`}>
         {STEPS.map((s, i) => (
-          <span key={s} className={`h-2 flex-1 border border-line rounded-lg ${i <= step ? 'bg-flame' : 'bg-paper'}`} />
+          <span key={s} className={`h-2 flex-1 border border-line rounded-xl ${i <= step ? 'bg-flame' : 'bg-paper'}`} />
         ))}
       </div>
       <p className="label mt-3">
@@ -184,7 +184,7 @@ function Preview({ program }: { program: UserProgram }) {
   return (
     <div>
       <Q sub="Tu pourras retirer des exercices et en ajouter d’autres (bouton « Ajouter un exercice » en bas de chaque séance : fiches complètes de la bibliothèque, ou 800 exercices du catalogue en fiche simplifiée). Le questionnaire se refait depuis le Menu.">Ton programme</Q>
-      <div className="mb-4 flex items-start gap-3 rounded-lg border border-line bg-sun px-3 py-3" role="note">
+      <div className="mb-4 flex items-start gap-3 rounded-xl border border-line bg-sun px-3 py-3" role="note">
         <Stethoscope className="mt-0.5 h-5 w-5 shrink-0" strokeWidth={2.5} />
         <p className="text-[13px] font-semibold leading-snug">
           <b className="block text-[14px] font-extrabold">Programme généré automatiquement</b>
@@ -204,7 +204,7 @@ function Preview({ program }: { program: UserProgram }) {
               {s.exercises.map((ex) => {
                 const d = ex.diagram ?? DIAGRAM_OF[ex.id]
                 return (
-                  <li key={ex.id} className="border border-line bg-paper rounded-lg">
+                  <li key={ex.id} className="border border-line bg-paper rounded-xl">
                     {d && (
                       <div className="diagram-bg aspect-[5/4] border-b border-line !border-t-0">
                         <ExerciseDiagram id={d} />

@@ -276,7 +276,7 @@ export function SetCoach({ name, cadence, sides, target, setLabel, rest, onSideD
               <li
                 key={i}
                 style={{ flexGrow: p.s }}
-                className={`basis-0 border border-line px-1 py-1.5 text-[11px] font-extrabold uppercase transition-transform duration-150 rounded-lg ${BG[p.kind]} ${
+                className={`basis-0 border border-line px-1 py-1.5 text-[11px] font-extrabold uppercase transition-transform duration-150 rounded-xl ${BG[p.kind]} ${
                   i === phaseIdx ? '-translate-y-1' : 'opacity-60'
                 }`}
               >

@@ -50,7 +50,7 @@ export function CooldownCoach({ session, date, onClose }: { session: Session; da
     ) : (
       <div className="fade-in fixed inset-0 z-[60] flex items-end justify-center bg-ink/40" onClick={onClose}>
         <div
-          className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 rounded-t-lg md:rounded-none md:rounded-l-[26px]"
+          className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-label="Retour au calme"
@@ -70,10 +70,10 @@ export function CooldownCoach({ session, date, onClose }: { session: Session; da
             {routine.map((s, i) => (
               <li key={s.id} className="b-card flex gap-3 p-2">
                 <div className="flex shrink-0 flex-col gap-1.5">
-                  <div className="diagram-bg h-[88px] w-[88px] rounded-lg border border-line">
+                  <div className="diagram-bg h-[88px] w-[88px] rounded-xl border border-line">
                     <ExerciseDiagram id={s.diagram} />
                   </div>
-                  {s.photos && <PhotoPair srcs={stretchPhotos(s.id)} alt={s.name} className="h-[66px] w-[88px] rounded-lg border border-line" />}
+                  {s.photos && <PhotoPair srcs={stretchPhotos(s.id)} alt={s.name} className="h-[66px] w-[88px] rounded-xl border border-line" />}
                 </div>
                 <div className="min-w-0 flex-1 py-0.5">
                   <p className="text-[11px] font-extrabold uppercase text-ink/60">
@@ -221,11 +221,11 @@ function Runner({ steps, onDone, onClose }: { steps: Step[]; onDone: () => void;
         ) : (
           <>
             <div className={`grid w-full gap-2 ${st.stretch.photos ? 'max-w-[360px] grid-cols-2' : 'max-w-[260px]'}`}>
-              <div className="diagram-bg aspect-[5/4] w-full rounded-lg border border-line">
+              <div className="diagram-bg aspect-[5/4] w-full rounded-xl border border-line">
                 <ExerciseDiagram id={st.stretch.diagram} />
               </div>
               {st.stretch.photos && (
-                <PhotoPair srcs={stretchPhotos(st.stretch.id)} alt={st.stretch.name} className="aspect-[5/4] w-full rounded-lg border border-line" />
+                <PhotoPair srcs={stretchPhotos(st.stretch.id)} alt={st.stretch.name} className="aspect-[5/4] w-full rounded-xl border border-line" />
               )}
             </div>
             <p className="mt-4 text-[14px] font-black uppercase tracking-wide">

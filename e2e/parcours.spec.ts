@@ -8,7 +8,7 @@ test.describe('Parcours complet', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect(page.getByRole('progressbar').first()).toHaveAttribute('aria-valuenow', '0')
     const card = page.getByRole('article').filter({ has: page.getByLabel('Ouvrir RDL aux haltères') })
-    await expect(card.getByText(/^\d{2}$/).first()).toBeVisible()
+    await expect(card.getByText(/Séance A • \d{2}/)).toBeVisible()
     await expect(card.getByText('4 séries', { exact: true })).toBeVisible()
     await expect(card.getByText('0/4 séries')).toBeVisible()
     await shot('Séance A chargée : fiches numérotées et pilules')
@@ -40,6 +40,28 @@ test.describe('Parcours complet', () => {
     await shot('Exercices validés : pilules menthe')
     await page.getByRole('article').nth(1).getByRole('button', { name: /Validé/ }).click()
     await expect(page.getByRole('article').nth(1).getByRole('button', { name: /^Valider$/ })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  test('Filtre par séance (dock) et par zone (Genou, Cheville, Fessiers)', async ({ app, page, shot }) => {
+    await app({ view: 'seanceA' })
+    const dock = page.getByRole('navigation', { name: 'Onglets' }).last()
+    // Séance B : ses exercices remplacent ceux de la Séance A.
+    await dock.getByRole('button', { name: /Séance B/ }).click()
+    await expect(dock.getByRole('button', { name: /Séance B/ })).toHaveAttribute('aria-current', 'page')
+    await expect(page.getByLabel('Ouvrir RDL aux haltères')).toHaveCount(0)
+    await expect(page.getByText(/Séance B • 01/)).toBeVisible()
+    // Retour Séance A, puis filtre « Cheville » : seules les fiches taguées cheville restent.
+    await dock.getByRole('button', { name: /Séance A/ }).click()
+    const filters = page.getByRole('toolbar', { name: 'Filtres' })
+    const all = await page.getByRole('article').count()
+    await filters.getByRole('button', { name: /Cheville/ }).click()
+    await expect(filters.getByRole('button', { name: /Cheville/ })).toHaveAttribute('aria-pressed', 'true')
+    const ankle = Number((await filters.getByRole('button', { name: /Cheville/ }).textContent())?.match(/\d+/)?.[0])
+    await expect(page.getByRole('article')).toHaveCount(ankle)
+    expect(ankle).toBeLessThan(all)
+    await shot('Filtre Cheville actif')
+    await filters.getByRole('button', { name: /Tous/ }).click()
+    await expect(page.getByRole('article')).toHaveCount(all)
   })
 
   test('Chronomètre de repos : pause, reprise et préréglages', async ({ app, page }) => {

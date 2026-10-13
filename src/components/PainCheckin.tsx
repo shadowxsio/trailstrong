@@ -29,7 +29,7 @@ export function PainCheckin({ date }: { date: string }) {
         {JOINTS.map((j) => {
           const v = dayPain(c, j.id)
           return (
-            <span key={j.id} className={`border border-line px-1.5 text-[12px] font-black rounded-lg ${v === undefined ? 'bg-paper' : scaleBg(v)}`}>
+            <span key={j.id} className={`border border-line px-1.5 text-[12px] font-black rounded-xl ${v === undefined ? 'bg-paper' : scaleBg(v)}`}>
               {j.emoji} {v === undefined ? '–' : `${v}/10`}
             </span>
           )
@@ -38,7 +38,7 @@ export function PainCheckin({ date }: { date: string }) {
       </button>
 
       {alerts.map((a) => (
-        <p key={a.joint} className="mt-3 flex items-start gap-2 border border-line bg-rose px-3 py-2 text-[13px] font-bold leading-snug rounded-lg" role="alert">
+        <p key={a.joint} className="mt-3 flex items-start gap-2 border border-line bg-rose px-3 py-2 text-[13px] font-bold leading-snug rounded-xl" role="alert">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
           <span>
             Attention : {a.reason}. Garde les charges actuelles, privilégie le contrôle (tempo lent, isométrie) et parles-en à un physio si ça persiste.
@@ -58,7 +58,7 @@ function PainSheet({ date, value, onClose }: { date: string; value: Checkin; onC
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-center" onClick={onClose}>
       <div
-        className="sheet pb-safe w-full max-w-xl border border-b-0 border-line bg-paper-2 px-4 pt-4 md:border-b rounded-t-lg md:rounded-none md:rounded-l-[26px]"
+        className="sheet pb-safe w-full max-w-xl border border-b-0 border-line bg-paper-2 px-4 pt-4 md:border-b rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Check-in douleur"
@@ -110,7 +110,7 @@ function PainSheet({ date, value, onClose }: { date: string; value: Checkin; onC
                       navigator.vibrate?.(8)
                       updateCheckin(date, { [key(j.id)]: v })
                     }}
-                    className={`grid h-11 place-items-center border border-line text-[14px] font-black transition duration-100 active:translate-y-px rounded-lg ${
+                    className={`grid h-11 place-items-center border border-line text-[14px] font-black transition duration-100 active:translate-y-px rounded-xl ${
                       cur === v ? `${scaleBg(v)} -translate-y-0.5` : 'bg-paper'
                     }`}
                   >

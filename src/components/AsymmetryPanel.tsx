@@ -26,11 +26,11 @@ export function AsymmetryPanel({ exercises }: { exercises: Exercise[] }) {
               <li key={ex.id}>
                 <div className="mb-1 flex items-baseline justify-between gap-2 text-[13px] font-bold">
                   <span className="truncate">{ex.name}</span>
-                  <span className={`shrink-0 border border-line px-1.5 text-[11px] font-black rounded-lg ${gap >= 15 ? 'bg-rose' : gap >= 10 ? 'bg-sun' : 'bg-mint'}`}>
+                  <span className={`shrink-0 border border-line px-1.5 text-[11px] font-black rounded-xl ${gap >= 15 ? 'bg-rose' : gap >= 10 ? 'bg-sun' : 'bg-mint'}`}>
                     {gap === 0 ? '=' : `${a.pct > 0 ? 'D' : 'G'} +${gap} %`}
                   </span>
                 </div>
-                <div className="flex h-5 border border-line text-[10px] font-black rounded-lg">
+                <div className="flex h-5 border border-line text-[10px] font-black rounded-xl">
                   <span className="flex items-center bg-sky pl-1.5" style={{ width: `${lPct}%` }}>
                     G
                   </span>

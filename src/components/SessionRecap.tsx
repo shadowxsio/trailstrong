@@ -29,7 +29,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
       <div
-        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 md:max-h-none md:w-[480px] md:border-b md:border-r-0 rounded-t-lg md:rounded-none md:rounded-l-[26px]"
+        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 md:max-h-none md:w-[480px] md:border-b md:border-r-0 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Bilan de séance"
@@ -53,13 +53,13 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
             <Stat icon={<Clock className="h-4 w-4" strokeWidth={2.5} />} label="Durée" value={r.minutes ? `${r.minutes}′` : '—'} sub="environ" />
           </section>
           {r.records.length > 0 && (
-            <p className="flex items-start gap-2 border border-line bg-sun px-3 py-2 text-[13px] font-bold leading-snug rounded-lg">
+            <p className="flex items-start gap-2 border border-line bg-sun px-3 py-2 text-[13px] font-bold leading-snug rounded-xl">
               <Trophy className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
               <span>Record{r.records.length > 1 ? 's' : ''} : {r.records.map((x) => `${x.name} (${x.weight} lbs)`).join(', ')}</span>
             </p>
           )}
           {r.asym.length > 0 && (
-            <p className="border border-line px-3 py-2 text-[12px] font-bold leading-snug rounded-lg">
+            <p className="border border-line px-3 py-2 text-[12px] font-bold leading-snug rounded-xl">
               Écart gauche / droite : {r.asym.map((a) => `${a.name} ${a.pct > 0 ? 'D' : 'G'} +${Math.abs(a.pct)} %`).join(' · ')}. Le côté faible passera en premier la prochaine fois.
             </p>
           )}
@@ -75,7 +75,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
                   role="radio"
                   aria-checked={log.rpe === v}
                   onClick={() => set({ rpe: v })}
-                  className={`h-10 border border-line text-[14px] font-black rounded-lg ${log.rpe === v ? `${scaleBg(v - 1)}` : 'bg-paper'}`}
+                  className={`h-10 border border-line text-[14px] font-black rounded-xl ${log.rpe === v ? `${scaleBg(v - 1)}` : 'bg-paper'}`}
                 >
                   {v}
                 </button>
@@ -88,7 +88,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
                   ['ankleAfter', '⚓ Cheville'],
                 ] as const
               ).map(([k, label]) => (
-                <label key={k} className="border border-line bg-paper px-2 py-1.5 rounded-lg">
+                <label key={k} className="border border-line bg-paper px-2 py-1.5 rounded-xl">
                   <span className="flex justify-between text-[12px] font-black uppercase tracking-wide">
                     {label} après <span className="not-italic">{c[k] ?? '–'}/10</span>
                   </span>
@@ -117,7 +117,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
           {/* Récupération */}
           <section>
             <h3 className="label mb-2">Pour bien récupérer</h3>
-            <ul className="divide-y-2 divide-ink/15 border border-line bg-paper rounded-lg">
+            <ul className="divide-y-2 divide-ink/15 border border-line bg-paper rounded-xl">
               {tips.map((t) => (
                 <li key={t.title} className="flex gap-3 px-3 py-2.5">
                   <span className="text-[20px] leading-none">{t.icon}</span>
@@ -147,7 +147,7 @@ export function SessionRecap({ session, date, onClose, onCooldown }: { session: 
 
 function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub: string }) {
   return (
-    <div className="border border-line bg-paper px-2.5 py-2 rounded-lg">
+    <div className="border border-line bg-paper px-2.5 py-2 rounded-xl">
       <p className="label flex items-center gap-1">
         {icon} {label}
       </p>

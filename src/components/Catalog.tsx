@@ -247,7 +247,7 @@ export function Catalog({
           </p>
         )}
         {groups.map((g) => (
-          <section key={g.session.id} className="grid gap-4 md:grid-cols-12 md:gap-6">
+          <section key={g.session.id} className="grid gap-4 lg:grid-cols-12 lg:gap-6">
             <SectionHeader
               tour={step(g.session) === 1 ? 'warmup' : undefined}
               n={step(g.session)}
@@ -263,7 +263,7 @@ export function Catalog({
                 ) : null
               }
             />
-            <div className="grid grid-cols-1 gap-3 md:col-span-8 lg:col-span-9 lg:grid-cols-2 lg:gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:col-span-9">
               {g.items.map(({ ex, i }) => (
                 <ExerciseTile
                   key={`${date}-${ex.id}`}
@@ -280,7 +280,7 @@ export function Catalog({
                   type="button"
                   data-tour={step(g.session) === 2 ? 'add' : undefined}
                   onClick={() => setAdding(g.session)}
-                  className="flex min-h-[72px] items-center justify-center gap-2 rounded-lg border border-dashed border-line px-3 text-[12px] font-bold uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:border-sun hover:text-ink active:border-sun"
+                  className="flex min-h-[72px] items-center justify-center gap-2 rounded-xl border border-dashed border-line px-3 text-[12px] font-bold uppercase tracking-[0.14em] text-muted transition-colors duration-150 hover:border-sun hover:text-ink active:border-sun"
                 >
                   <Plus className="h-4 w-4" strokeWidth={2.4} /> Ajouter un exercice à cette séance
                 </button>
@@ -290,7 +290,7 @@ export function Catalog({
         ))}
 
         {showMobility && current && (
-          <section className="grid gap-4 md:grid-cols-12 md:gap-6">
+          <section className="grid gap-4 lg:grid-cols-12 lg:gap-6">
             <SectionHeader
               tour="mobility"
               n={3}
@@ -299,8 +299,8 @@ export function Catalog({
               done={data.sessions[date]?.[current.id]?.cooldownAt ? routine.length : 0}
               total={routine.length}
             />
-            <div className="md:col-span-8 lg:col-span-9">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div className="lg:col-span-9">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {routine.map((st) => (
                 <button key={st.id} type="button" onClick={() => setCooldown(current)} className="b-card overflow-hidden text-left active:translate-y-px">
                   <div className="diagram-bg aspect-[5/4] border-b border-line !border-t-0">
@@ -367,10 +367,10 @@ export function Catalog({
 function SectionHeader({ n, title, sub, done, total, action, tour }: { n: number | null; title: string; sub: string; done: number; total: number; action?: ReactNode; tour?: string }) {
   const complete = total > 0 && done === total
   return (
-    <div data-tour={tour} className="self-start border-t-2 border-sun pt-3 md:sticky md:top-4 md:col-span-4 lg:col-span-3">
-      <div className="flex items-start gap-3 md:block">
-        {n && <span className="text-[40px] font-extrabold leading-none tracking-tight text-sun tabular-nums md:text-[56px]">{String(n).padStart(2, '0')}</span>}
-        <div className="min-w-0 flex-1 md:mt-3">
+    <div data-tour={tour} className="self-start border-t-2 border-sun pt-3 lg:sticky lg:top-4 lg:col-span-3">
+      <div className="flex items-start gap-3 lg:block">
+        {n && <span className="text-[40px] font-extrabold leading-none tracking-tight text-sun tabular-nums lg:text-[56px]">{String(n).padStart(2, '0')}</span>}
+        <div className="min-w-0 flex-1 lg:mt-3">
           <h2 className="text-[20px] font-extrabold uppercase leading-tight tracking-[0.04em]">{title}</h2>
           <p className="kicker mt-1">{sub}</p>
         </div>

@@ -33,7 +33,7 @@ export function TestsPanel({ open, setOpen }: { open: boolean; setOpen: (o: bool
           const v = last ? jointScore(data, last, j) : undefined
           const prev = dates.length > 1 ? jointScore(data, dates[dates.length - 2], j) : undefined
           return (
-            <div key={j} className={`border border-line p-3 rounded-lg ${scoreBg(v)}`}>
+            <div key={j} className={`border border-line p-3 rounded-xl ${scoreBg(v)}`}>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.08em]">Score {j === 'ankle' ? 'cheville ⚓' : 'genou 🩹'}</p>
               <p className="text-[30px] font-black leading-none">{v ?? '–'}<span className="text-[14px]">/100</span></p>
               {v !== undefined && prev !== undefined && (
@@ -48,7 +48,7 @@ export function TestsPanel({ open, setOpen }: { open: boolean; setOpen: (o: bool
       </div>
 
       {last && (
-        <ul className="mt-4 divide-y-2 divide-ink/15 border border-line rounded-lg">
+        <ul className="mt-4 divide-y-2 divide-ink/15 border border-line rounded-xl">
           {MONTHLY_TESTS.map((t) => {
             const r = data.tests[last][t.id]
             const a = testAsym(r)
@@ -58,7 +58,7 @@ export function TestsPanel({ open, setOpen }: { open: boolean; setOpen: (o: bool
                 <span className="font-black ">
                   G {r?.L ?? '–'} · D {r?.R ?? '–'} <span className="text-[11px] font-bold text-ink/60">{t.unit}</span>
                 </span>
-                {a !== undefined && Math.abs(a) >= 10 && <span className="border border-line bg-sun px-1 text-[10px] font-black rounded-lg">{a > 0 ? 'D' : 'G'} +{Math.abs(a)} %</span>}
+                {a !== undefined && Math.abs(a) >= 10 && <span className="border border-line bg-sun px-1 text-[10px] font-black rounded-xl">{a > 0 ? 'D' : 'G'} +{Math.abs(a)} %</span>}
               </li>
             )
           })}
@@ -82,7 +82,7 @@ function TestSheet({ onClose }: { onClose: () => void }) {
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
       <div
-        className="sheet pb-safe max-h-[92dvh] w-full max-w-xl overflow-y-auto border border-b-0 border-line bg-paper-2 px-4 pt-4 md:max-h-none md:w-[480px] md:border-b md:border-r-0 rounded-t-lg md:rounded-none md:rounded-l-[26px]"
+        className="sheet pb-safe max-h-[92dvh] w-full max-w-xl overflow-y-auto border border-b-0 border-line bg-paper-2 px-4 pt-4 md:max-h-none md:w-[480px] md:border-b md:border-r-0 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Test mensuel"

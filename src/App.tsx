@@ -154,21 +154,21 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
     <div className="min-h-dvh" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       {/* ── En-tête : logo + sous-titre à gauche, accès rapides compacts à droite ── */}
       <header className="pt-safe">
-        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 pb-3 pt-4 md:px-6">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 border-b border-line px-5 pb-4 pt-5 md:border-b-0 md:px-6">
           <button type="button" onClick={() => setView('all')} className="logo-patch" aria-label="Accueil">
-            <span className="text-[24px] min-[400px]:text-[27px]">TrailStrong</span>
-            <span className="kicker mt-1.5">Séances &amp; préparation</span>
+            <span className="text-[24px] min-[400px]:text-[26px]">TrailStrong</span>
+            <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted">Séances &amp; préparation</span>
           </button>
           <button
             type="button"
             onClick={focusSearch}
             aria-label="Rechercher"
-            className="b-btn ml-auto grid h-10 w-10 shrink-0 place-items-center"
+            className="ml-auto grid h-10 w-10 shrink-0 place-items-center rounded-full border border-cream/45 text-cream transition-colors duration-150 hover:border-cream"
           >
-            <Search className="h-[18px] w-[18px]" strokeWidth={2.2} />
+            <Search className="h-[17px] w-[17px]" strokeWidth={2.4} />
           </button>
-          <button type="button" onClick={() => setMenu(true)} data-tour="menu" className="b-btn flex h-10 shrink-0 items-center gap-1.5 px-3 text-[12px] uppercase tracking-[0.14em]">
-            <Menu className="h-[18px] w-[18px]" strokeWidth={2.2} /> Menu
+          <button type="button" onClick={() => setMenu(true)} data-tour="menu" className="pill pill-amber h-10 shrink-0 gap-1.5 px-4 text-[12px] uppercase">
+            <Menu className="h-4 w-4" strokeWidth={2.8} /> Menu
           </button>
         </div>
 
@@ -209,24 +209,24 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
       <TimerBar />
 
-      {/* ── Dock flottant (mobile) : bulle ambre sur l'onglet actif ── */}
+      {/* ── Dock flottant en verre dépoli (mobile) : onglet actif en bulle corail ── */}
       <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 px-3 md:hidden" aria-label="Onglets" data-noswipe data-tour="tabs">
-        <ul className="mb-2 grid rounded-lg border border-line bg-glass p-1" style={{ gridTemplateColumns: `repeat(${TABS.length}, minmax(0, 1fr))` }}>
+        <ul className="alpine-glass mb-3 flex h-14 items-center justify-around rounded-full px-1.5 shadow-2xl">
           {TABS.map((t) => {
             const active = t.id === view
             const Icon = t.icon
             return (
-              <li key={t.id}>
+              <li key={t.id} className="min-w-0">
                 <button
                   type="button"
                   onClick={() => setView(t.id)}
                   aria-current={active ? 'page' : undefined}
-                  className="flex h-[52px] w-full flex-col items-center justify-center gap-1 px-0.5"
+                  className={`flex h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-full px-2.5 text-[10px] transition-colors duration-150 min-[400px]:px-3.5 ${
+                    active ? 'bg-flame/90 font-extrabold text-on' : 'font-bold text-cream/75'
+                  }`}
                 >
-                  <span className={`grid h-7 w-10 place-items-center rounded-full transition-colors duration-150 ${active ? 'bg-sun text-on' : 'text-muted'}`}>
-                    <Icon className="h-[17px] w-[17px]" strokeWidth={2.2} />
-                  </span>
-                  <span className={`truncate text-[9px] font-bold uppercase tracking-[0.12em] ${active ? 'text-ink' : 'text-muted'}`}>{t.short}</span>
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={2.4} />
+                  <span className="truncate uppercase">{t.short}</span>
                 </button>
               </li>
             )

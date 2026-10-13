@@ -95,7 +95,7 @@ export function GuidedTour({ onClose }: { onClose: () => void }) {
       {/* Projecteur : tout l'écran assombri sauf l'élément présenté. */}
       {rect ? (
         <div
-          className="pointer-events-none fixed rounded-lg border border-sun transition-all duration-300"
+          className="pointer-events-none fixed rounded-xl border border-sun transition-all duration-300"
           style={{
             left: rect.left - pad,
             top: rect.top - pad,

@@ -31,7 +31,8 @@
   --color-ink: #ffffff; /* texte principal */
   --color-muted: #b5b0c8; /* métadonnées */
   --color-cream: #f4efe6; /* contours nets (pilules, boutons) */
-  --color-line: rgb(244 239 230 / 0.22); /* filets de la grille */
+  --color-line: rgb(244 239 230 / 0.25); /* filets Swiss Alpine 1px */
+  --color-edge: rgb(244 239 230 / 0.4); /* contour des cartes 1,5px */
   --color-paper: #211d35; /* cartes (ardoise violette) */
   --color-paper-2: #141122; /* fond de page (indigo nuit) */
   --color-glass: rgb(33 29 53 / 0.88); /* dock flottant, chrono */
@@ -50,7 +51,7 @@
   --color-rust: #c9622c;
   --color-danger: #ff8a7a;
   --color-on: #141122; /* texte sur les aplats colorés */
-  --radius-card: 8px;
+  --radius-card: 14px;
   --font-sans: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-display: "Shrikhand", "Cooper Black", Georgia, serif;
   --font-mono: "Karla", ui-sans-serif, system-ui, sans-serif;
@@ -62,6 +63,7 @@
   --color-muted: #5d5873;
   --color-cream: #141122;
   --color-line: rgb(20 17 34 / 0.18);
+  --color-edge: rgb(20 17 34 / 0.32);
   --color-paper: #fffdf8;
   --color-paper-2: #f4efe6;
   --color-glass: rgb(255 253 248 / 0.92);
@@ -101,7 +103,7 @@ body {
 /* Bloc d'en-tête de page : panneau de la grille, filet fin. */
 .hero {
   background-color: var(--color-paper);
-  border: 1px solid var(--color-line);
+  border: 1.5px solid var(--color-edge);
   border-radius: var(--radius-card);
 }
 
@@ -175,18 +177,18 @@ body {
   /* Carte : ardoise violette, une seule bordure fine crème, angles nets. */
   .b-card {
     background: var(--color-paper);
-    border: 1px solid var(--color-line);
+    border: 1.5px solid var(--color-edge);
     border-radius: var(--radius-card);
   }
   .b-box {
     background: var(--color-paper);
     border: 1px solid var(--color-line);
-    border-radius: 6px;
+    border-radius: 12px;
   }
   .b-btn {
     background: var(--color-paper);
     border: 1px solid var(--color-line);
-    border-radius: 6px;
+    border-radius: 12px;
     font-weight: 700;
     transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
   }
@@ -207,7 +209,7 @@ body {
   .b-input {
     background: var(--color-paper);
     border: 1px solid var(--color-line);
-    border-radius: 6px;
+    border-radius: 12px;
     font-weight: 600;
   }
   .b-input:focus {
@@ -242,13 +244,27 @@ body {
     font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
-    border: 1px solid color-mix(in srgb, var(--color-cream) 50%, transparent);
-    color: var(--color-ink);
+    border: 1px solid color-mix(in srgb, var(--color-cream) 45%, transparent);
+    background: color-mix(in srgb, var(--color-paper-2) 55%, transparent);
+    color: var(--color-cream);
   }
   .pill-amber {
     background: var(--color-sun);
     border-color: var(--color-sun);
     color: var(--color-on);
+    font-weight: 800;
+  }
+  .pill-mint {
+    background: color-mix(in srgb, var(--color-mint) 14%, transparent);
+    border-color: var(--color-mint);
+    color: var(--color-ocean);
+    font-weight: 800;
+  }
+  .pill-coral {
+    background: color-mix(in srgb, var(--color-flame) 15%, transparent);
+    border-color: var(--color-flame);
+    color: var(--color-flame);
+    font-weight: 800;
   }
   /* Médaillon : pastille ronde menthe avec icône, libellé menthe. */
   .pill-medal {
@@ -271,7 +287,7 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 999px;
+    border-radius: 12px;
     border: 1px solid var(--color-cream);
     background: transparent;
     color: var(--color-ink);
@@ -291,10 +307,10 @@ body {
   }
   /* Pastilles de série ◯ → ● menthe. */
   .set-dot {
-    width: 0.75rem;
-    height: 0.75rem;
+    width: 0.875rem;
+    height: 0.875rem;
     border-radius: 999px;
-    border: 1px solid var(--color-cream);
+    border: 2px solid var(--color-cream);
   }
   .set-dot.is-done {
     background: var(--color-mint);
@@ -386,8 +402,13 @@ body {
 .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 .pt-safe { padding-top: env(safe-area-inset-top); }
 
-/* Dock flottant et chrono : léger flou sous le fond translucide (lisibilité au-dessus du contenu). */
-.bg-glass {
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+/* Verre dépoli (dock flottant, chrono) : fond ardoise 88 % + flou + filet crème. */
+.alpine-glass {
+  background: var(--color-glass);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgb(244 239 230 / 0.28);
+}
+:root[data-theme="light"] .alpine-glass {
+  border-color: var(--color-line);
 }

@@ -58,7 +58,7 @@ export function AddExerciseSheet({ session, onClose, onAdded }: { session: Sessi
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40" onClick={onClose}>
       <div
-        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 rounded-t-lg md:rounded-none md:rounded-l-[26px]"
+        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Ajouter un exercice"
@@ -96,7 +96,7 @@ export function AddExerciseSheet({ session, onClose, onAdded }: { session: Sessi
                   </button>
                 ))}
               </div>
-              <p className="mt-3 flex gap-2 rounded-lg border border-line px-3 py-2 text-[12px] font-semibold leading-snug text-ink/80">
+              <p className="mt-3 flex gap-2 rounded-xl border border-line px-3 py-2 text-[12px] font-semibold leading-snug text-ink/80">
                 <Info className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
                 {TAB_INFO[tab]}
               </p>
@@ -190,7 +190,7 @@ function LibraryTab({ session, inSession, onPick }: { session: Session; inSessio
                 className={`b-card flex w-full items-center gap-3 p-2 text-left active:translate-y-px ${added ? 'opacity-60' : ''}`}
                 aria-label={`Voir ${ex.name}`}
               >
-                <span className="diagram-bg h-14 w-14 shrink-0 rounded-lg border border-line">
+                <span className="diagram-bg h-14 w-14 shrink-0 rounded-xl border border-line">
                   <ExerciseDiagram id={diagramOf(ex)} />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -214,7 +214,7 @@ function LibraryPreview({ ex, fromCatalog, added, onBack, onAdd }: { ex: Exercis
   return (
     <div className="space-y-3">
       {fromCatalog && (
-        <p className="flex gap-2 rounded-lg border border-line bg-mint px-3 py-2 text-[12px] font-bold leading-snug">
+        <p className="flex gap-2 rounded-xl border border-line bg-mint px-3 py-2 text-[12px] font-bold leading-snug">
           <Check className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={3} /> Cet exercice existe en fiche complète : c’est elle qui sera ajoutée.
         </p>
       )}
@@ -224,13 +224,13 @@ function LibraryPreview({ ex, fromCatalog, added, onBack, onAdd }: { ex: Exercis
           {ex.target} · {ex.equipment}
         </p>
       </div>
-      <section className="diagram-bg overflow-hidden rounded-lg border border-line">
+      <section className="diagram-bg overflow-hidden rounded-xl border border-line">
         <div className="mx-auto aspect-[5/4] w-full max-w-[300px]">
           <ExerciseDiagram id={diagramOf(ex)} />
         </div>
       </section>
       <DemoPlayer ex={ex} />
-      <p className="rounded-lg border border-line bg-paper px-3 py-2 text-[13px] font-bold leading-snug">
+      <p className="rounded-xl border border-line bg-paper px-3 py-2 text-[13px] font-bold leading-snug">
         {ex.sets} × {ex.reps}
         {ex.rest > 0 && ` · repos ${restLabel(ex.rest)}`}
       </p>
@@ -245,7 +245,7 @@ function LibraryPreview({ ex, fromCatalog, added, onBack, onAdd }: { ex: Exercis
         </p>
       )}
       {ex.steps.length > 0 && (
-        <details className="rounded-lg border border-line bg-paper px-3 py-2 text-[13px]">
+        <details className="rounded-xl border border-line bg-paper px-3 py-2 text-[13px]">
           <summary className="cursor-pointer font-black uppercase tracking-wide">Exécution ({ex.steps.length} étapes)</summary>
           <ol className="mt-2 list-decimal space-y-1 pl-5 leading-snug">
             {ex.steps.map((s, i) => (
@@ -343,9 +343,9 @@ function CatalogTab({ onPick }: { onPick: (e: CatalogEntry) => void }) {
 function Thumb({ src }: { src: string }) {
   const [ok, setOk] = useState(true)
   return ok ? (
-    <img src={src} alt="" loading="lazy" onError={() => setOk(false)} className="h-14 w-14 shrink-0 border border-line object-cover rounded-lg" />
+    <img src={src} alt="" loading="lazy" onError={() => setOk(false)} className="h-14 w-14 shrink-0 border border-line object-cover rounded-xl" />
   ) : (
-    <span className="grid h-14 w-14 shrink-0 place-items-center border border-line rounded-lg">
+    <span className="grid h-14 w-14 shrink-0 place-items-center border border-line rounded-xl">
       <ImageOff className="h-4 w-4 text-ink/50" />
     </span>
   )
@@ -451,14 +451,14 @@ function Preview({ draft: d, setDraft, onBack, onSave }: { draft: CustomDraft; s
 
   return (
     <div>
-      <p className="mb-3 flex gap-2 rounded-lg border border-line bg-sun px-3 py-2 text-[12px] font-bold leading-snug">
+      <p className="mb-3 flex gap-2 rounded-xl border border-line bg-sun px-3 py-2 text-[12px] font-bold leading-snug">
         <Info className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
         <span>
           Fiche simplifiée : schéma approchant (touche-le pour en changer), tempo standard, pas de conseils genou / cheville
           {d.stepsLang === 'en' ? ', consignes en anglais' : ''}. Vérifie les séries et le repos.
         </span>
       </p>
-      <section className="diagram-bg overflow-hidden border border-line rounded-lg">
+      <section className="diagram-bg overflow-hidden border border-line rounded-xl">
         <div className="mx-auto aspect-[5/4] w-full max-w-[300px]">
           <ExerciseDiagram id={d.diagram ?? 'squat'} />
         </div>
@@ -468,9 +468,9 @@ function Preview({ draft: d, setDraft, onBack, onSave }: { draft: CustomDraft; s
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         {d.photos ? (
-          d.photos.map((src, i) => <img key={i} src={src} alt={`Position ${i + 1}`} className="aspect-[4/3] w-full border border-line object-cover rounded-lg" />)
+          d.photos.map((src, i) => <img key={i} src={src} alt={`Position ${i + 1}`} className="aspect-[4/3] w-full border border-line object-cover rounded-xl" />)
         ) : d.catalogId ? (
-          <p className="col-span-2 flex items-center gap-2 border border-line px-3 py-2 text-[12px] font-bold text-ink/70 rounded-lg">
+          <p className="col-span-2 flex items-center gap-2 border border-line px-3 py-2 text-[12px] font-bold text-ink/70 rounded-xl">
             <Loader2 className="h-4 w-4 animate-spin" /> Téléchargement des photos…
           </p>
         ) : null}
@@ -502,14 +502,14 @@ function Preview({ draft: d, setDraft, onBack, onSave }: { draft: CustomDraft; s
           {timed ? '⏱ Maintien chrono' : '🏋️ Répétitions'}
         </button>
       </div>
-      <p className="mb-3 border border-line bg-paper px-3 py-2 text-[13px] font-bold leading-snug rounded-lg">
+      <p className="mb-3 border border-line bg-paper px-3 py-2 text-[13px] font-bold leading-snug rounded-xl">
         {d.sets} × {d.reps} · repos {d.restS ?? 0} s
         {d.cadence?.length ? <span className="block text-[12px] text-ink/70">Tempo coach : {d.cadence.map((p) => `${p.label} ${p.s} s`).join(' → ')}</span> : null}
       </p>
 
       {d.tip && <p className="mb-2 text-[13px] leading-snug"><b>Consigne :</b> {d.tip}</p>}
       {d.steps && d.steps.length > 0 && (
-        <details className="mb-3 border border-line bg-paper px-3 py-2 text-[13px] rounded-lg">
+        <details className="mb-3 border border-line bg-paper px-3 py-2 text-[13px] rounded-xl">
           <summary className="cursor-pointer font-black uppercase tracking-wide">Exécution ({d.steps.length} étapes{d.stepsLang === 'en' ? ', en anglais' : ''})</summary>
           <ol className="mt-2 list-decimal space-y-1 pl-5 leading-snug">
             {d.steps.map((s, i) => (

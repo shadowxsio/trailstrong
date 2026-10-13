@@ -139,7 +139,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
         <select
           value={exId}
           onChange={(e) => setExId(e.target.value)}
-          className="mb-3 w-full h-11 border border-line bg-paper px-3 text-[13px] text-ink rounded-lg"
+          className="mb-3 w-full h-11 border border-line bg-paper px-3 text-[13px] text-ink rounded-xl"
         >
           {PROGRAM.map((sess) => {
             const exs = weighted.filter((e) => e.sessionId === sess.id)
@@ -211,7 +211,7 @@ export function StatsView({ testsOpen = false, setTestsOpen = () => {} }: { test
                     </span>
                     <span className="flex flex-wrap justify-end gap-1">
                       {sessions.map((p) => (
-                        <span key={p.id} className="border border-line bg-sun px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide rounded-lg">
+                        <span key={p.id} className="border border-line bg-sun px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide rounded-xl">
                           {p.short}
                         </span>
                       ))}
