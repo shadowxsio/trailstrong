@@ -14,8 +14,8 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { title: 'Bienvenue sur TrailStrong', text: 'Petit tour d’une minute pour découvrir l’app. Tu peux le passer et le revoir quand tu veux depuis le Menu.' },
-  { target: 'tabs', title: 'Tes séances', text: 'Choisis la séance du jour ici. « Tout » montre tout le programme, « Stats » ta progression semaine après semaine.' },
+  { title: 'Bienvenue sur TrailStrong', text: 'Petit tour d’une minute pour découvrir l’app. Tu peux le passer et le revoir quand tu veux depuis l’onglet Aide.' },
+  { target: 'tabs', title: 'Tes séances', text: 'Choisis la séance du jour ici. « Tout » montre tout le programme. Le logo TrailStrong te ramène toujours à ta séance.' },
   { target: 'finish', title: 'Terminer la séance', text: 'À la fin, touche ce bouton : bilan, ressenti, et conseils de récup (protéines, eau, course).' },
   { target: 'warmup', title: '1 · Activation', text: 'Commence toujours par l’échauffement : quelques minutes pour réveiller chevilles, genoux et fessiers.' },
   { target: 'exercise', title: 'Un exercice', text: 'Touche la carte pour voir le schéma, les photos et les consignes. Le bouton « Coach » te guide au son : 3-2-1, tempo de chaque rep, stop, repos.' },
@@ -27,7 +27,8 @@ const STEPS: Step[] = [
     text: 'Tu veux varier ? « Bibliothèque » : des fiches complètes comme ton programme. « Catalogue » : 800 exercices en fiche simplifiée (photos, schéma approchant). Touche une carte puis « Retirer » pour en enlever un.',
   },
   { target: 'mobility', title: '3 · Mobilité', text: 'Pour finir, le retour au calme guidé : des étirements choisis pour la séance, enchaînés par le coach.' },
-  { target: 'menu', title: 'Le Menu', text: 'Ton profil, le son du coach, refaire ton programme, le guide & aide complet… et revoir cette visite.' },
+  { target: 'menu', title: 'Le dock', text: 'Séances et Stats à gauche, le Menu au centre (focus genou / cheville, son du coach, sauvegardes, TrailJourney), Aide et Profil à droite.' },
+  { target: 'tab-profile', title: 'Ton profil', text: 'Choisis ton petit perso, ton poids et gère ton compte. Dans Aide : la FAQ, ce tuto à refaire et un lien pour nous écrire.' },
   {
     title: 'C’est parti !',
     text: 'Ton programme est généré automatiquement à partir de tes réponses : c’est un repère, pas un avis médical. Le mieux est de le faire valider par un physio ou un coach, surtout en cas de douleur ou de blessure.',

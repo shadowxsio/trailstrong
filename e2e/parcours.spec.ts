@@ -44,7 +44,7 @@ test.describe('Parcours complet', () => {
 
   test('Filtre par séance (dock) et par zone (Genou, Cheville, Fessiers)', async ({ app, page, shot }) => {
     await app({ view: 'seanceA' })
-    const dock = page.getByRole('navigation', { name: 'Onglets' }).last()
+    const dock = page.getByRole('navigation', { name: 'Séances' })
     // Séance B : ses exercices remplacent ceux de la Séance A.
     await dock.getByRole('button', { name: /Séance B/ }).click()
     await expect(dock.getByRole('button', { name: /Séance B/ })).toHaveAttribute('aria-current', 'page')

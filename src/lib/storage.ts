@@ -66,6 +66,8 @@ export interface TestResult {
 /** Profil sportif (sert aux repères de récupération). */
 export interface Profile {
   name?: string
+  /** Petit perso (emoji parmi AVATARS de lib/suite). */
+  avatar?: string
   weightKg?: number
   weightUnit?: 'kg' | 'lbs'
   /** Réponses du questionnaire (servent au bilan). */

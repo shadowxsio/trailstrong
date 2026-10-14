@@ -21,9 +21,12 @@ export const HELP: HelpSection[] = [
     title: 'Démarrer',
     entries: [
       { q: 'À quoi sert TrailStrong ?', a: 'À faire ton renforcement de coureur de trail : séances guidées (échauffement, exercices, mobilité), chrono de repos, coach sonore et suivi de ta progression.' },
-      { q: 'Mon programme', a: 'À la première connexion, un court questionnaire (objectifs, zones sensibles, matériel, niveau, rythme) génère ton programme. Tu peux le refaire quand tu veux : Menu → Refaire mon programme.' },
+      { q: 'Mon programme', a: 'À la première connexion, un court questionnaire (objectifs, zones sensibles, matériel, niveau, rythme) génère ton programme. Tu peux le refaire quand tu veux : onglet Profil → Refaire mon programme.' },
       { q: 'Installer l’app sur mon téléphone', a: 'Dans ton navigateur : Partager → « Sur l’écran d’accueil » (iPhone) ou menu ⋮ → « Installer l’application » (Android). Elle s’ouvre alors comme une vraie app, même hors-ligne.' },
-      { q: 'Revoir la visite guidée', a: 'Menu → Visite guidée : un tour d’une minute des écrans principaux.' }
+      { q: 'Se repérer', a: 'Le dock en bas : Séances et Stats à gauche, le Menu au centre, Aide et Profil à droite. Le logo TrailStrong en haut ramène toujours à ta séance.' },
+      { q: 'Revoir la visite guidée', a: 'Onglet Aide → « Refaire le tuto » : un tour d’une minute des écrans principaux.' },
+      { q: 'Choisir mon perso', a: 'Onglet Profil → Ton perso : 10 emojis au choix. Il s’affiche en haut à droite et dans le dock.' },
+      { q: 'Poser une question', a: 'Onglet Aide → « Nous écrire » : ton appli mail s’ouvre avec le sujet déjà rempli.' }
     ]
   },
   {
@@ -31,11 +34,11 @@ export const HELP: HelpSection[] = [
     icon: '🏋️',
     title: 'Faire une séance',
     entries: [
-      { q: 'Choisir la séance', a: 'Onglets en bas (ou en haut sur ordinateur) : Tout, Séance A, Séance B, Tapis, Stats. Commence toujours par 1 · Activation (l’échauffement).' },
+      { q: 'Choisir la séance', a: 'Onglet Séances, puis le sélecteur en haut : Tout, Séance A, Séance B, Tapis… Commence toujours par 1 · Activation (l’échauffement).' },
       { q: 'Ouvrir un exercice', a: 'Touche la carte : schéma, photos de départ et d’arrivée, consignes et conseils genou / cheville.' },
       { q: 'Valider une série', a: 'Touche « ✓ Valider » après chaque série : la pastille se remplit et le chrono de repos démarre tout seul.' },
       { q: 'Le chrono de repos', a: 'Il bipe à la fin. 60 s, 90 s ou +30 s pour l’ajuster, ▶ pour le lancer à la main, pause pour l’arrêter.' },
-      { q: 'Le coach sonore', a: 'Bouton « Coach » dans la fiche : décompte 3-2-1, tempo de chaque répétition (descends, monte), stop et repos. Réglage du son dans le Menu.' },
+      { q: 'Le coach sonore', a: 'Bouton « Coach » dans la fiche : décompte 3-2-1, tempo de chaque répétition (descends, monte), stop et repos. Réglage du son dans le Menu (bouton central du dock).' },
       { q: 'Exercices sur une jambe', a: 'Les exercices unilatéraux se font côté gauche puis côté droit : l’app te dit quand changer de jambe et compte chaque côté.' }
     ]
   },
@@ -55,7 +58,7 @@ export const HELP: HelpSection[] = [
     entries: [
       { q: 'Le bilan', a: 'À 100 % de la séance (ou bouton « Bilan & récup ») : volume, records, écart gauche / droite, difficulté ressentie et douleur après la séance.' },
       { q: 'Retour au calme', a: 'Des étirements et de la mobilité choisis pour la séance, enchaînés par le coach avec un schéma.' },
-      { q: 'Conseils de récup', a: 'Protéines, eau et reprise de la course, dosés selon le poids indiqué dans ton Profil (Menu).' }
+      { q: 'Conseils de récup', a: 'Protéines, eau et reprise de la course, dosés selon le poids indiqué dans l’onglet Profil.' }
     ]
   },
   {
@@ -64,7 +67,7 @@ export const HELP: HelpSection[] = [
     title: 'Progression & tests',
     entries: [
       { q: 'Les statistiques', a: 'Onglet Stats : tes charges, ton volume et ton D+ semaine après semaine.' },
-      { q: 'Les tests mensuels', a: 'Menu → Tests mensuels, toutes les 4 semaines : tests gauche / droite pour suivre tes progrès et repérer un déséquilibre.' },
+      { q: 'Les tests mensuels', a: 'Onglet Profil → Tests mensuels, toutes les 4 semaines : tests gauche / droite pour suivre tes progrès et repérer un déséquilibre.' },
       { q: 'Douleur genou ou cheville', a: 'Le check-in douleur ajuste la charge proposée. En cas de douleur qui persiste, arrête l’exercice et consulte un physio.' }
     ]
   },
@@ -90,7 +93,7 @@ export const HELP: HelpSection[] = [
     icon: '🧭',
     title: 'La suite Trail',
     entries: [
-      { q: 'TrailJourney', a: 'L’app sœur pour partager ta course en direct : position, heures de passage aux ravitos, alertes pour tes proches. Même compte Google. Lien dans le Menu → La suite Trail.' }
+      { q: 'TrailJourney', a: 'L’app sœur pour partager ta course en direct : position, heures de passage aux ravitos, alertes pour tes proches. Même compte Google. Lien dans le Menu (bouton central du dock) → La suite Trail.' }
     ]
   }
 ]

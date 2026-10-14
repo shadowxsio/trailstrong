@@ -25,7 +25,7 @@ export function TimerBar() {
         <button type="button" onClick={timer.dismiss} aria-label="Fermer l’alerte de fin de repos" className="flash fixed inset-0 z-30 bg-mint/40" />
       )}
       <div
-        className="pointer-events-none fixed inset-x-0 z-40 px-3 bottom-[calc(80px+env(safe-area-inset-bottom))] md:bottom-4"
+        className="pointer-events-none fixed inset-x-0 z-40 px-3 bottom-[calc(84px+env(safe-area-inset-bottom))]"
         data-noswipe
       >
         <div

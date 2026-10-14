@@ -10,12 +10,32 @@ test.describe('Accueil', () => {
 
   test('Navigation : Tout, Séance A, Séance B, Tapis, Stats', async ({ app, page, shot }) => {
     await app()
-    const dock = page.getByRole('navigation', { name: 'Onglets' }).last()
-    for (const tab of ['Tout', 'Séance A', 'Séance B', 'Tapis', 'Stats']) {
-      await dock.getByRole('button', { name: new RegExp(tab) }).first().click()
-      await page.waitForTimeout(200)
+    const seances = page.getByRole('navigation', { name: 'Séances' })
+    for (const tab of ['Tout', 'Séance A', 'Séance B', 'Tapis']) {
+      await seances.getByRole('button', { name: new RegExp(tab) }).first().click()
+      await expect(seances.getByRole('button', { name: new RegExp(tab) }).first()).toHaveAttribute('aria-current', 'page')
     }
+    await page.getByRole('navigation', { name: 'Onglets' }).getByRole('button', { name: /Stats/ }).click()
+    await expect(seances).toHaveCount(0)
     await shot('Vue Stats')
+  })
+
+  test('Dock de la suite Trail : Séances, Stats, Menu au centre, Aide, Profil', async ({ app, page, shot }) => {
+    await app({ view: 'seanceB' })
+    const dock = page.getByRole('navigation', { name: 'Onglets' })
+    await expect(dock.getByRole('button')).toHaveText([/Séances/, /Stats/, /Menu/, /Aide/, /Profil/])
+    await expect(page.getByText('Forge tes jambes de trailer')).toBeVisible()
+    await shot('En-tête et dock')
+    // Le perso choisi dans le Profil s'affiche en haut à droite et dans le dock.
+    await page.getByTestId('header-avatar').click()
+    await expect(dock.getByRole('button', { name: /Profil/ })).toHaveAttribute('aria-current', 'page')
+    await page.getByRole('radio', { name: 'Perso 🦊' }).click()
+    await expect(page.getByTestId('header-avatar')).toHaveText('🦊')
+    await expect(dock.getByRole('button', { name: /Profil/ })).toContainText('🦊')
+    await shot('Choix du perso')
+    // Le logo ramène à la dernière séance ouverte.
+    await page.getByRole('button', { name: 'Accueil' }).click()
+    await expect(page.getByRole('navigation', { name: 'Séances' }).getByRole('button', { name: /Séance B/ })).toHaveAttribute('aria-current', 'page')
   })
 })
 
