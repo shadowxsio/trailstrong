@@ -1,12 +1,15 @@
 /**
- * Onglet Profil (dock) : ton perso, ton poids, ton compte. Même place que le Profil de TrailJourney.
+ * Onglet Profil (dock) : ton perso, ton poids, ton programme, les paramètres (son du coach,
+ * sauvegardes, mode admin) et ton compte. Même place que le Profil de TrailJourney ; le Menu, lui,
+ * ne contient que de la navigation.
  */
-import { LogOut } from 'lucide-react'
+import { LogOut, Stethoscope } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { lock } from '../lib/auth'
 import { getGoogleSession } from '../lib/googleAuth'
 import { AVATARS, avatarOf } from '../lib/suite'
 import { updateProfile, useData } from '../lib/storage'
+import { SettingsPanel } from './SettingsPanel'
 
 export interface CloudInfo {
   email: string
@@ -89,6 +92,9 @@ export function ProfileView({ cloud, onLock, onTests }: { cloud?: CloudInfo; onL
         </div>
       </Block>
 
+      <h2 className="kicker mt-2">Paramètres</h2>
+      <SettingsPanel cloud={cloud} />
+
       <Block title="Mon compte" desc={cloud ? `${cloud.email} · ${cloud.status}` : account ? account.email : 'Session PIN sur cet appareil'}>
         <button
           type="button"
@@ -101,6 +107,11 @@ export function ProfileView({ cloud, onLock, onTests }: { cloud?: CloudInfo; onL
           <LogOut className="h-4 w-4" strokeWidth={2.4} /> {cloud?.logoutLabel ?? 'Se déconnecter'}
         </button>
       </Block>
+
+      <p className="flex items-start justify-center gap-1.5 text-center text-[12px] font-semibold leading-snug text-ink/70">
+        <Stethoscope className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2.5} /> Repères d’entraînement, pas un avis médical : en cas de douleur ou de blessure, consulte un physio.
+      </p>
+      <p className="mb-2 text-center text-[11px] text-ink/45">TrailStrong 2026 · v{__APP_VERSION__} · {cloud ? 'données synchronisées sur ton compte' : 'données 100 % locales'}</p>
     </section>
   )
 }

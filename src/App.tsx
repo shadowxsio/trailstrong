@@ -1,9 +1,9 @@
 import { BarChart3, CircleHelp, Dumbbell, LayoutGrid, Menu, type LucideIcon } from 'lucide-react'
-import { Suspense, lazy, useEffect, useMemo, useRef, useState, type ComponentProps, type TouchEvent } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState, type TouchEvent } from 'react'
 import { Catalog, type Scope } from './components/Catalog'
 import { SESSION_META, sessionIcon } from './components/meta'
 import { LoginScreen } from './components/LoginScreen'
-import type { SettingsSheet as SettingsSheetType } from './components/SettingsSheet'
+import type { CloudInfo } from './components/ProfileView'
 import { TimerBar } from './components/TimerBar'
 import type { FocusTag, Session } from './data/program'
 import { hasValidSession } from './lib/auth'
@@ -16,7 +16,7 @@ import { TAGLINE, avatarOf } from './lib/suite'
 
 const CloudApp = lazy(() => import('./CloudApp'))
 // Écrans secondaires chargés à la demande (démarrage plus léger ; précachés pour le hors-ligne).
-const SettingsSheet = lazy(() => import('./components/SettingsSheet').then((m) => ({ default: m.SettingsSheet })))
+const MenuSheet = lazy(() => import('./components/MenuSheet').then((m) => ({ default: m.MenuSheet })))
 const StatsView = lazy(() => import('./components/StatsView').then((m) => ({ default: m.StatsView })))
 const GuidedTour = lazy(() => import('./components/GuidedTour').then((m) => ({ default: m.GuidedTour })))
 const SandboxApp = lazy(() => import('./SandboxApp'))
@@ -44,7 +44,7 @@ function tabsOf(program: Session[]): Tab[] {
 }
 
 /** Sur-titre de la page (le nom de l'onglet est déjà dans le dock : pas de grand titre en double). */
-const VIEW_TITLE: Partial<Record<View, string>> = { stats: 'Ta progression', help: 'Guide & aide · FAQ, tuto, contact', profile: 'Ton perso & ton compte' }
+const VIEW_TITLE: Partial<Record<View, string>> = { stats: 'Ta progression', help: 'Guide & aide · FAQ, tuto, contact', profile: 'Ton perso, tes paramètres, ton compte' }
 
 const isScope = (v: View) => v !== 'stats' && v !== 'help' && v !== 'profile'
 
@@ -78,7 +78,7 @@ function LocalApp() {
   return <Shell onLock={() => setAuth('locked')} />
 }
 
-export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: ComponentProps<typeof SettingsSheetType>['cloud'] }) {
+export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: CloudInfo }) {
   useAutoBackup()
   const program = useProgram()
   const { profile } = useData()
@@ -279,9 +279,8 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
       <Suspense fallback={null}>
         {menu && (
-          <SettingsSheet
+          <MenuSheet
             onClose={() => setMenu(false)}
-            cloud={cloud}
             onTour={startTour}
             onNavigate={(v, f) => {
               setView(v)
