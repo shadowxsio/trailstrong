@@ -156,7 +156,7 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
       <header className="pt-safe">
         <div className="mx-auto flex max-w-6xl items-center gap-2 border-b border-line px-5 pb-4 pt-5 md:border-b-0 md:px-6">
           <button type="button" onClick={() => setView('all')} className="logo-patch" aria-label="Accueil">
-            <span className="text-[24px] min-[400px]:text-[26px]">TrailStrong</span>
+            <span className="text-[24px] min-[400px]:text-[26px]" aria-label="TrailStrong">Trail<span className="logo-strong">Strong</span></span>
             <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted">Séances &amp; préparation</span>
           </button>
           <button

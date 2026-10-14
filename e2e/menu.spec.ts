@@ -1,13 +1,18 @@
 import { expect, test } from './fixtures'
 
 test.describe('Menu', () => {
-  test('Thème clair et sombre', async ({ app, page, shot }) => {
+  test('Suite Trail : thème sombre, logo TrailStrong et lien vers TrailJourney', async ({ app, page, shot }) => {
     await app()
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+    const strong = page.locator('.logo-strong').first()
+    await expect(strong).toHaveText('Strong')
+    await expect(strong).toHaveCSS('color', 'rgb(255, 107, 44)')
     await page.getByRole('button', { name: 'Menu' }).click()
-    await page.getByRole('radio', { name: /Clair/ }).click()
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-    await page.getByRole('button', { name: 'Fermer' }).first().click()
-    await shot('Thème clair')
+    await expect(page.getByRole('radio', { name: /Clair/ })).toHaveCount(0)
+    const suite = page.getByTestId('suite-link')
+    await expect(suite).toHaveAttribute('href', 'https://trailstrong-646d0.web.app/')
+    await expect(suite).toContainText('TrailJourney')
+    await shot('La suite Trail dans le Menu')
   })
 
   test('Pas d’assistant IA dans les réglages', async ({ app, page }) => {

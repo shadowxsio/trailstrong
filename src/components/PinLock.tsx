@@ -99,7 +99,7 @@ export function PinLock({
         </button>
       )}
       <div className="mb-7 logo-patch text-[28px]">
-          <span>TrailStrong</span>
+          <span aria-label="TrailStrong">Trail<span className="logo-strong">Strong</span></span>
         </div>
 
       <div className="b-card w-full max-w-[340px] p-5">
