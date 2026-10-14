@@ -1,31 +1,18 @@
-import { CloudUpload, Download, KeyRound, Lock, RotateCcw, Stethoscope, Upload, X } from 'lucide-react'
+import { CloudUpload, Download, KeyRound, Lock, RotateCcw, Upload } from 'lucide-react'
 import { useRef, useState, type ComponentType, type ReactNode } from 'react'
-import { createPortal } from 'react-dom'
 import type { CloudInfo } from './ProfileView'
 import { exitAdmin, resetLocalPin, setLocalPin, useAdmin, usingDefaultPin } from '../lib/auth'
 import { PinLock } from './PinLock'
 import { setSoundPrefs, sfx, unlockAudio, useSoundPrefs } from '../lib/sound'
 import { backupNow, getRecoveryKey, restoreFromGist, setRecoveryKey } from '../lib/backup'
-import type { FocusTag } from '../data/program'
 import { enterSandbox, inSandbox } from '../lib/sandbox'
 import { exportJson, importJson, today, updateGist, useData } from '../lib/storage'
-import type { View } from '../App'
 
-export function SettingsSheet({
-  onClose,
-  onNavigate,
-  onTests,
-  cloud,
-  onTour,
-}: {
-  onClose: () => void
-  onNavigate: (view: View, focus?: FocusTag) => void
-  onTests: () => void
-  /** Mode comptes (Firebase) : compte, synchro et programme. */
-  cloud?: CloudInfo
-  /** Relance la visite guidée de l'app. */
-  onTour?: () => void
-}) {
+/**
+ * Paramètres de l'app (onglet Profil → Paramètres) : son du coach, sauvegardes, mode admin.
+ * Le Menu du dock ne contient que de la navigation, comme celui de TrailJourney.
+ */
+export function SettingsPanel({ cloud }: { cloud?: CloudInfo }) {
   const data = useData()
   const g = data.gist
   const sound = useSoundPrefs()
@@ -96,103 +83,8 @@ export function SettingsSheet({
     </>
   )
 
-  return createPortal(
-    <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
-      <div
-        className="sheet pb-safe max-h-[92dvh] w-full max-w-xl overflow-y-auto border border-b-0 border-line bg-paper-2 px-4 pt-4 md:max-h-none md:w-[460px] md:border-b md:border-r-0 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-label="Réglages"
-        data-noswipe
-      >
-        <div className="mb-3 flex items-center justify-between">
-          <div>
-            <p className="kicker">Tout le reste</p>
-            <h2 className="headline text-[30px]">Menu</h2>
-          </div>
-          <button type="button" onClick={onClose} className="b-btn grid h-11 w-11 place-items-center rounded-full" aria-label="Fermer">
-            <X className="h-5 w-5" strokeWidth={3} />
-          </button>
-        </div>
-
-        {/* Liste cousue : surtitre + titre */}
-        <nav className="lined mb-6 border border-line rounded-xl">
-          {(
-            [
-              ['all', undefined, '4 séances, 20 exercices', 'Tout le programme'],
-              ['all', 'knee', 'Rotule, freinage, valgus', 'Focus genou'],
-              ['all', 'ankle', 'Proprioception & propulsion', 'Focus cheville'],
-              ['all', 'glutes', 'Grand & moyen fessier', 'Fessiers'],
-              ['stats', undefined, 'Charges, volume & D+', 'Progression'],
-            ] as const
-          ).map(([view, focus, over, title]) => (
-            <button
-              key={title}
-              type="button"
-              onClick={() => onNavigate(view, focus)}
-              className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 px-4 py-2 text-left transition-colors hover:bg-sun/60"
-            >
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">{over}</span>
-              <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">{title}</span>
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => onNavigate('help')}
-            className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 px-4 py-2 text-left transition-colors hover:bg-sun/60"
-          >
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">Toutes les réponses</span>
-            <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">Guide & aide</span>
-          </button>
-          {onTour && (
-            <button
-              type="button"
-              onClick={onTour}
-              className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 px-4 py-2 text-left transition-colors hover:bg-sun/60"
-            >
-              <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">1 minute, pas à pas</span>
-              <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">Visite guidée</span>
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={onTests}
-            className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 px-4 py-2 text-left transition-colors hover:bg-sun/60"
-          >
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">Toutes les 4 semaines, G / D</span>
-            <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">Tests mensuels</span>
-          </button>
-</nav>
-
-        <h3 className="headline headline-sun mb-3 text-[22px]">Réglages</h3>
-
-        <Block title="La suite Trail" desc="Même compte Google : prépare ton corps ici, partage ta course en direct avec TrailJourney.">
-          <a
-            href="https://trailstrong-646d0.web.app/"
-            target="_blank"
-            rel="noopener"
-            data-testid="suite-link"
-            className="b-btn flex items-center gap-3 p-3 no-underline"
-          >
-            <span
-              aria-hidden="true"
-              className="display grid h-11 w-11 shrink-0 place-items-center rounded-[11px] border-2 border-[#7fb8e6] bg-paper-2 pb-0.5 text-[21px]"
-            >
-              <span>
-                <span className="text-cream">T</span>
-                <span className="text-[#7fb8e6]">j</span>
-              </span>
-            </span>
-            <span className="flex min-w-0 flex-col items-start">
-              <span className="display text-[20px] leading-normal" aria-label="TrailJourney">
-                <span className="text-cream">Trail</span>
-                <span className="text-[#7fb8e6]">Journey</span>
-              </span>
-              <span className="text-[11px] font-semibold text-muted">Suivi live de trail · ouvrir ↗</span>
-            </span>
-          </a>
-        </Block>
-
+  return (
+    <div data-testid="settings">
         <Block title="Son du coach" desc="Un son différent pour le décompte, le départ, chaque phase, la dernière rep, la fin, le repos et la reprise. La voix (en option) compte les reps.">
           <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Son">
             {(
@@ -367,13 +259,13 @@ export function SettingsSheet({
             <button
               type="button"
               onClick={exitAdmin}
-              className="b-btn b-btn-ink mb-8 mt-1 flex h-12 w-full items-center justify-center gap-2 uppercase tracking-wide"
+              className="b-btn b-btn-ink mb-5 mt-1 flex h-12 w-full items-center justify-center gap-2 uppercase tracking-wide"
             >
               <Lock className="h-4 w-4" /> Quitter le mode admin
             </button>
           </>
         ) : (
-          <section className="b-card mb-8 p-4">
+          <section className="b-card mb-5 p-4">
             <h3 className="text-[16px] font-black uppercase tracking-wide tracking-tight">🔒 Mode admin</h3>
             <p className="mb-3 mt-1 text-[13px] font-semibold leading-snug text-ink/75">
               Sauvegardes, backup cloud et PIN sont protégés par ton code PIN (10 min d’accès).
@@ -384,13 +276,7 @@ export function SettingsSheet({
           </section>
         )}
         {askPin && <PinLock overlay onUnlock={() => setAskPin(false)} onCancel={() => setAskPin(false)} />}
-        <p className="mb-2 flex items-start justify-center gap-1.5 text-center text-[12px] font-semibold leading-snug text-ink/70">
-          <Stethoscope className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2.5} /> Repères d’entraînement, pas un avis médical : en cas de douleur ou de blessure, consulte un physio.
-        </p>
-        <p className="mb-6 text-center text-[11px] text-ink/45">TrailStrong 2026 · v{__APP_VERSION__} · {cloud ? 'données synchronisées sur ton compte' : 'données 100 % locales'}</p>
-      </div>
-    </div>,
-    document.body,
+    </div>
   )
 }
 

@@ -1,5 +1,5 @@
 /**
- * Guide & aide de TrailStrong (Menu → Guide & aide). Une section = un thème ; chaque entrée = une
+ * Guide & aide de TrailStrong (onglet Aide du dock). Une section = un thème ; chaque entrée = une
  * question et sa réponse. Même structure que le guide de TrailJourney (suite Trail).
  */
 export interface HelpEntry {
@@ -38,7 +38,7 @@ export const HELP: HelpSection[] = [
       { q: 'Ouvrir un exercice', a: 'Touche la carte : schéma, photos de départ et d’arrivée, consignes et conseils genou / cheville.' },
       { q: 'Valider une série', a: 'Touche « ✓ Valider » après chaque série : la pastille se remplit et le chrono de repos démarre tout seul.' },
       { q: 'Le chrono de repos', a: 'Il bipe à la fin. 60 s, 90 s ou +30 s pour l’ajuster, ▶ pour le lancer à la main, pause pour l’arrêter.' },
-      { q: 'Le coach sonore', a: 'Bouton « Coach » dans la fiche : décompte 3-2-1, tempo de chaque répétition (descends, monte), stop et repos. Réglage du son dans le Menu (bouton central du dock).' },
+      { q: 'Le coach sonore', a: 'Bouton « Coach » dans la fiche : décompte 3-2-1, tempo de chaque répétition (descends, monte), stop et repos. Réglage du son : onglet Profil → Paramètres.' },
       { q: 'Exercices sur une jambe', a: 'Les exercices unilatéraux se font côté gauche puis côté droit : l’app te dit quand changer de jambe et compte chaque côté.' }
     ]
   },

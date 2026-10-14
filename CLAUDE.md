@@ -1,7 +1,8 @@
 # TrailStrong — instructions pour les agents
 
 PWA de renforcement pour coureurs (React 19 + Vite + TypeScript + Tailwind v4), publiée sur
-https://shadowxsio.github.io/trailstrong/ (dépôt dédié `shadowxsio/trailstrong`). Interface **en français, tutoiement**.
+https://strong.trailsuite.app (redirige vers https://shadowxsio.github.io/trailstrong/ ; dépôt dédié `shadowxsio/trailstrong`,
+à migrer dans le monorepo `shadowxsio/trail-suite`). Interface **en français, tutoiement**.
 Le `README.md` décrit les fonctionnalités en détail.
 
 ## Commandes

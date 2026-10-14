@@ -27,8 +27,8 @@ const STEPS: Step[] = [
     text: 'Tu veux varier ? « Bibliothèque » : des fiches complètes comme ton programme. « Catalogue » : 800 exercices en fiche simplifiée (photos, schéma approchant). Touche une carte puis « Retirer » pour en enlever un.',
   },
   { target: 'mobility', title: '3 · Mobilité', text: 'Pour finir, le retour au calme guidé : des étirements choisis pour la séance, enchaînés par le coach.' },
-  { target: 'menu', title: 'Le dock', text: 'Séances et Stats à gauche, le Menu au centre (focus genou / cheville, son du coach, sauvegardes, TrailJourney), Aide et Profil à droite.' },
-  { target: 'tab-profile', title: 'Ton profil', text: 'Choisis ton petit perso, ton poids et gère ton compte. Dans Aide : la FAQ, ce tuto à refaire et un lien pour nous écrire.' },
+  { target: 'menu', title: 'Le dock', text: 'Séances et Stats à gauche, le Menu au centre (tout le programme, focus genou / cheville / fessiers, tests mensuels, TrailJourney), Aide et Profil à droite.' },
+  { target: 'tab-profile', title: 'Ton profil', text: 'Ton petit perso, ton poids, ton programme et les paramètres : son du coach, sauvegardes. Dans Aide : la FAQ, ce tuto à refaire et un lien pour nous écrire.' },
   {
     title: 'C’est parti !',
     text: 'Ton programme est généré automatiquement à partir de tes réponses : c’est un repère, pas un avis médical. Le mieux est de le faire valider par un physio ou un coach, surtout en cas de douleur ou de blessure.',
