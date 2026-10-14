@@ -6,10 +6,5 @@ if (window.top !== window.self) {
     window.top.location = window.self.location.href
   } catch (e) {}
 }
-// Thème appliqué avant le premier rendu (sombre par défaut) — évite le flash blanc.
-try {
-  var a = localStorage.getItem('trailstrong:account')
-  var t = localStorage.getItem(a ? 'ts:' + a + ':trailstrong:theme' : 'trailstrong:theme') === 'light' ? 'light' : 'dark'
-  document.documentElement.dataset.theme = t
-  if (t === 'light') document.querySelector('meta[name=theme-color]').setAttribute('content', '#f4efe6')
-} catch (e) {}
+// Thème sombre uniquement (thème commun de la suite Trail), appliqué avant le premier rendu.
+document.documentElement.dataset.theme = 'dark'

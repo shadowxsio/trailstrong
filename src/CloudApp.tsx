@@ -174,7 +174,7 @@ function Splash({ text, children }: { text: string; children?: ReactNode }) {
   return (
     <div className="hero pt-safe pb-safe flex min-h-dvh flex-col items-center justify-center !border-0 px-5">
       <div className="mb-7 logo-patch text-[28px]">
-          <span>TrailStrong</span>
+          <span aria-label="TrailStrong">Trail<span className="logo-strong">Strong</span></span>
         </div>
       <div className="b-card w-full max-w-[380px] p-5">
         <p className="text-[16px] font-black uppercase tracking-wide leading-snug">{text}</p>

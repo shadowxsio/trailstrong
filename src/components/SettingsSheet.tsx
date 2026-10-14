@@ -4,7 +4,6 @@ import { createPortal } from 'react-dom'
 import { exitAdmin, lock, resetLocalPin, setLocalPin, useAdmin, usingDefaultPin } from '../lib/auth'
 import { getGoogleSession } from '../lib/googleAuth'
 import { PinLock } from './PinLock'
-import { useTheme } from '../lib/theme'
 import { setSoundPrefs, sfx, unlockAudio, useSoundPrefs } from '../lib/sound'
 import { backupNow, getRecoveryKey, restoreFromGist, setRecoveryKey } from '../lib/backup'
 import type { FocusTag } from '../data/program'
@@ -31,7 +30,6 @@ export function SettingsSheet({
 }) {
   const data = useData()
   const g = data.gist
-  const [theme, setTheme] = useTheme()
   const sound = useSoundPrefs()
   const admin = useAdmin()
   const [askPin, setAskPin] = useState(false)
@@ -171,26 +169,31 @@ export function SettingsSheet({
 
         <h3 className="headline headline-sun mb-3 text-[22px]">Réglages</h3>
 
-        <Block title="Apparence" desc="Sombre pour le sous-sol du gym, clair façon papier.">
-          <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Thème">
-            {(
-              [
-                ['dark', '🌙 Sombre'],
-                ['light', '☀️ Clair'],
-              ] as const
-            ).map(([t, label]) => (
-              <button
-                key={t}
-                type="button"
-                role="radio"
-                aria-checked={theme === t}
-                onClick={() => setTheme(t)}
-                className={`b-btn h-11 text-[14px] uppercase tracking-wide ${theme === t ? 'b-btn-ink' : ''}`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+        <Block title="La suite Trail" desc="Même compte Google : prépare ton corps ici, partage ta course en direct avec TrailJourney.">
+          <a
+            href="https://trailstrong-646d0.web.app/"
+            target="_blank"
+            rel="noopener"
+            data-testid="suite-link"
+            className="b-btn flex items-center gap-3 p-3 no-underline"
+          >
+            <span
+              aria-hidden="true"
+              className="display grid h-11 w-11 shrink-0 place-items-center rounded-[11px] border-2 border-[#7fb8e6] bg-paper-2 pb-0.5 text-[21px]"
+            >
+              <span>
+                <span className="text-cream">T</span>
+                <span className="text-[#7fb8e6]">j</span>
+              </span>
+            </span>
+            <span className="flex min-w-0 flex-col items-start">
+              <span className="display text-[20px] leading-normal" aria-label="TrailJourney">
+                <span className="text-cream">Trail</span>
+                <span className="text-[#7fb8e6]">Journey</span>
+              </span>
+              <span className="text-[11px] font-semibold text-muted">Suivi live de trail · ouvrir ↗</span>
+            </span>
+          </a>
         </Block>
 
         {cloud && (

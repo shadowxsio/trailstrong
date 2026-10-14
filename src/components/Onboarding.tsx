@@ -236,7 +236,7 @@ function Frame({ children }: { children: ReactNode }) {
   return (
     <div className="hero pt-safe pb-safe flex min-h-dvh flex-col items-center !border-0 px-4 py-8">
       <div className="mb-6 logo-patch text-[24px]">
-          <span>TrailStrong</span>
+          <span aria-label="TrailStrong">Trail<span className="logo-strong">Strong</span></span>
         </div>
       <div className="b-card w-full max-w-[520px] p-5">{children}</div>
     </div>

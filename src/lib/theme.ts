@@ -1,4 +1,7 @@
-/** Thème sombre (défaut) / clair, propre au compte actif. */
+/**
+ * Thème : sombre uniquement (thème commun de la suite Trail). Le type et les fonctions restent pour la
+ * synchro des réglages d'un ancien compte (un « clair » enregistré est ignoré).
+ */
 import { useEffect, useState } from 'react'
 import { scoped } from './account'
 
@@ -7,12 +10,13 @@ const KEY = scoped('trailstrong:theme')
 const listeners = new Set<(t: Theme) => void>()
 
 export function currentTheme(): Theme {
-  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+  return 'dark'
 }
 
-export function applyTheme(t: Theme, notify = true) {
+export function applyTheme(_requested: Theme, notify = true) {
+  const t: Theme = 'dark'
   document.documentElement.dataset.theme = t
-  document.querySelector('meta[name=theme-color]')?.setAttribute('content', t === 'light' ? '#f4efe6' : '#141122')
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', '#141122')
   try {
     localStorage.setItem(KEY, t)
   } catch {
