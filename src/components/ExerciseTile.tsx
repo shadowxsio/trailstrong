@@ -4,13 +4,11 @@ import type { Exercise, SessionId } from '../data/program'
 import { useExerciseLog } from '../lib/useExerciseLog'
 import { Pill, SESSION_META, categoryOf, iconOf, restLabel } from './meta'
 
-// Légères rotations alternées, comme des écussons cousus.
-const TILT = ['-rotate-[0.6deg]', 'rotate-[0.4deg]', '-rotate-[0.3deg]', 'rotate-[0.7deg]']
-const TAB_TILT = ['-rotate-1', 'rotate-[0.5deg]', '-rotate-[1.5deg]', 'rotate-1']
-
 /**
- * Fiche du catalogue : étiquette-onglet colorée, pastille icône, nom + catégorie,
- * perf précédente en gros chiffre italique, pilules de protocole, validation.
+ * Fiche d'exercice « Swiss Alpine Night Trail » (maquette TrailStrong du kit) :
+ * en-tête intérieur à filet (bulle ambre « ACTIVATION • 02 » + muscle ciblé en menthe),
+ * médaillon menthe à gauche du titre, consigne, petites bulles, puis pastilles de série
+ * et bouton « ✓ Valider » à contour crème (plein menthe une fois validé).
  */
 export const ExerciseTile = memo(function ExerciseTile({
   ex,
@@ -34,39 +32,40 @@ export const ExerciseTile = memo(function ExerciseTile({
   const s = SESSION_META[sessionId]
   const tid = ex.trackId ?? ex.id
   const kneeFocus = ex.tags.includes('knee')
+  const num = String(index + 1).padStart(2, '0')
 
   return (
-    <article className="fade-up relative pt-[26px]" data-tour={tour ? 'exercise' : undefined}>
-      {/* Étiquette-onglet */}
-      <span
-        className={`tag absolute left-4 top-0 z-10 h-7 border-b-0 px-2.5 text-[11px] ${TAB_TILT[index % 4]} ${done ? 'bg-mint' : s.bg}`}
-      >
-        {done ? '✓ Validé' : `${s.label} · ${String(index + 1).padStart(2, '0')}`}
-      </span>
+    <article className="fade-up h-full" data-tour={tour ? 'exercise' : undefined}>
+      <div className={`b-card flex h-full flex-col transition-colors duration-150 ${done ? '!border-mint' : ''}`}>
+        <button type="button" onClick={() => onOpen(ex, sessionId)} className="block w-full flex-1 space-y-3 p-4 pb-3 text-left" aria-label={`Ouvrir ${ex.name}`}>
+          {/* En-tête intérieur : catégorie numérotée + muscle ciblé */}
+          <div className="flex items-center justify-between gap-2 border-b border-cream/15 pb-2.5">
+            <span className="pill pill-amber h-5 px-3 text-[10px] uppercase tracking-wider">
+              {s.label} • {num}
+            </span>
+            <span
+              className="truncate text-[11px] font-bold text-ocean"
+              title={kneeFocus ? 'Cible la protection du genou' : 'Sans risque pour le genou'}
+            >
+              {categoryOf(ex)} <span aria-hidden>●</span>
+            </span>
+          </div>
 
-      <div data-card={ex.id} className={`b-card relative ${TILT[index % 4]} transition-transform duration-150`}>
-        <button type="button" onClick={() => onOpen(ex, sessionId)} className="block w-full px-4 pb-3 pt-4 text-left" aria-label={`Ouvrir ${ex.name}`}>
+          {/* Médaillon menthe + titre */}
           <div className="flex items-center gap-3.5">
-            <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-full border-[2.5px] border-ink bg-sky shadow-[0_2px_0_var(--color-shadow)]`}>
-              <Icon className="h-5 w-5 text-ink" strokeWidth={2.4} />
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-cream bg-mint text-on" aria-hidden>
+              <Icon className="h-5 w-5" strokeWidth={2.6} />
             </span>
             <div className="min-w-0 flex-1">
-              <h3 className="text-[16px] font-extrabold leading-tight text-ink">{ex.name}</h3>
-              <p className="mt-0.5 flex items-center gap-1.5 text-[13px] font-semibold text-ink/65">
-                <span className="truncate">{categoryOf(ex)}</span>
-                <span
-                  className={`inline-block h-2.5 w-2.5 shrink-0 rounded-full border-2 border-ink ${kneeFocus ? 'bg-sky' : 'bg-mint'}`}
-                  title={kneeFocus ? 'Cible la protection du genou' : 'Sans risque pour le genou'}
-                  aria-label={kneeFocus ? 'Cible la protection du genou' : 'Sans risque pour le genou'}
-                />
-              </p>
+              <h3 className="text-[18px] font-extrabold leading-tight text-ink">{ex.name}</h3>
+              <p className="mt-0.5 line-clamp-1 text-[12px] text-muted">{ex.target}</p>
             </div>
             {prev && (
               <div className="shrink-0 text-right">
-                <p className="text-[30px] font-black italic leading-none tracking-tight text-ink">{prev.value.replace('.', ',')}</p>
-                <p className="text-[10px] font-extrabold uppercase tracking-wide text-ink/60">{prev.unit} · préc.</p>
+                <p className="text-[24px] font-extrabold leading-none tracking-tight tabular-nums text-ink">{prev.value.replace('.', ',')}</p>
+                <p className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-muted">{prev.unit} · préc.</p>
                 {suggestion?.kind === 'up' && !done && (
-                  <p className="tag mt-1 h-5 bg-mint px-1.5 text-[10px]" title={suggestion.text}>
+                  <p className="pill pill-mint mt-1 h-5 px-1.5 text-[10px]" title={suggestion.text}>
                     ↑ {String(suggestion.weight).replace('.', ',')}
                   </p>
                 )}
@@ -74,10 +73,11 @@ export const ExerciseTile = memo(function ExerciseTile({
             )}
           </div>
 
-          {ex.cue && <p className="mt-3 line-clamp-2 text-[13px] font-medium leading-snug text-ink/80">{ex.cue}</p>}
+          {ex.cue && <p className="line-clamp-2 text-[14px] leading-relaxed text-cream/90">{ex.cue}</p>}
 
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            <Pill tone="sun">{ex.sets > 1 ? `${ex.sets} séries` : '1 bloc'}</Pill>
+          {/* Petites bulles */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <Pill tone="amber">{ex.sets > 1 ? `${ex.sets} séries` : '1 bloc'}</Pill>
             <Pill>{ex.reps}</Pill>
             {ex.rest > 0 && <Pill>Repos {restLabel(ex.rest)}</Pill>}
             {ex.equipment && <Pill>{ex.equipment}</Pill>}
@@ -85,18 +85,12 @@ export const ExerciseTile = memo(function ExerciseTile({
           </div>
         </button>
 
-        <div className="flex items-center gap-2 border-t-2 border-dashed border-ink/40 px-4 py-2.5">
-          <div className="flex min-w-0 flex-1 items-center gap-1 text-[12px] font-bold text-ink/70">
+        {/* Pied : pastilles de série + validation */}
+        <div className="mx-4 flex items-center justify-between gap-2 border-t border-cream/15 py-3">
+          <div className={`flex min-w-0 items-center gap-2 text-[12px] font-bold ${done ? 'text-ocean' : 'text-muted'}`}>
             {ex.mode !== 'treadmill' &&
-              sets.map((x, i) => (
-                <span
-                  key={i}
-                  className={`h-3 w-3 border-2 border-ink rounded-xl transition-colors duration-300 ${x.done ? 'pop ' : ''}${
-                    x.done ? 'bg-leaf' : x.L?.done || x.R?.done ? 'bg-[linear-gradient(90deg,var(--color-leaf)_50%,var(--color-paper)_50%)]' : 'bg-paper'
-                  }`}
-                />
-              ))}
-            <span className="ml-1.5 truncate">
+              sets.map((x, i) => <span key={i} aria-hidden className={`set-dot shrink-0 ${x.done ? 'is-done' : x.L?.done || x.R?.done ? 'is-half' : ''}`} />)}
+            <span className="ml-1 truncate">
               {done ? `Complété${maxToday ? ` · ${maxToday} lbs` : ''}` : ex.mode === 'treadmill' ? 'À faire' : `${doneSets.length}/${sets.length} séries`}
             </span>
           </div>
@@ -106,9 +100,9 @@ export const ExerciseTile = memo(function ExerciseTile({
             data-tour={tour ? 'validate' : undefined}
             onClick={toggleDone}
             aria-pressed={done}
-            className={`b-btn drop squish flex h-10 items-center gap-1.5 px-3 text-[12px] uppercase tracking-wide ${done ? 'pop bg-mint' : ''}`}
+            className={`pill-check h-8 shrink-0 px-4 text-[12px] ${done ? 'pop' : ''}`}
           >
-            <Check className={`h-4 w-4 ${done ? 'check-draw' : ''}`} strokeWidth={3.5} />
+            <Check className="h-3.5 w-3.5" strokeWidth={3} />
             {done ? 'Validé' : 'Valider'}
           </button>
         </div>

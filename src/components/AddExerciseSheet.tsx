@@ -12,8 +12,6 @@ import { DemoPlayer } from './DemoPlayer'
 import { FIGURES, type AnimationId } from './diagram-base'
 import { DIAGRAM_OF, ExerciseDiagram } from './ExerciseDiagram'
 import { restLabel } from './meta'
-import { haptic } from '../lib/haptics'
-import { useSheet } from '../lib/useSheet'
 
 type Tab = 'library' | 'catalog' | 'manual'
 const PRESETS = ['Ischios', 'Fessiers', 'Cheville', 'Genou', 'Tronc']
@@ -27,9 +25,7 @@ const TAB_INFO: Record<Tab, string> = {
 }
 
 /** Tiroir d'ajout : bibliothèque (fiches complètes), catalogue (~800 fiches simplifiées) ou saisie manuelle. */
-export function AddExerciseSheet({ session, onClose: closeNow, onAdded }: { session: Session; onClose: () => void; onAdded: (id: string) => void }) {
-  const sheet = useSheet(closeNow)
-  const onClose = sheet.close
+export function AddExerciseSheet({ session, onClose, onAdded }: { session: Session; onClose: () => void; onAdded: (id: string) => void }) {
   const [tab, setTab] = useState<Tab>('library')
   const [draft, setDraft] = useState<CustomDraft | null>(null)
   const [pick, setPick] = useState<{ ex: Exercise; fromCatalog: boolean } | null>(null)
@@ -49,7 +45,7 @@ export function AddExerciseSheet({ session, onClose: closeNow, onAdded }: { sess
 
   const done = (id: string) => {
     touch()
-    haptic([15, 30, 15])
+    navigator.vibrate?.([15, 30, 15])
     onAdded(id)
   }
   const save = (d: CustomDraft) => done(addCustom(session.id, d))
@@ -60,9 +56,9 @@ export function AddExerciseSheet({ session, onClose: closeNow, onAdded }: { sess
 
   const detail = draft ?? pick
   return createPortal(
-    <div className={`${sheet.backdrop} fixed inset-0 z-50 flex items-end justify-center`} onClick={onClose}>
+    <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40" onClick={onClose}>
       <div
-        ref={sheet.ref} className={`${sheet.panel} pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border-[2.5px] border-b-0 border-ink bg-paper-2 rounded-t-[26px] md:rounded-none md:rounded-l-[26px]`}
+        className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Ajouter un exercice"
@@ -71,7 +67,7 @@ export function AddExerciseSheet({ session, onClose: closeNow, onAdded }: { sess
         <header className="px-4 pt-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="tag h-6 -rotate-1 bg-sun px-2 text-[10px]">Nouvel exercice · {session.short}</p>
+              <p className="tag h-6 bg-sun px-2 text-[10px]">Nouvel exercice · {session.short}</p>
               <h2 className="headline mt-2 text-[26px]">{detail ? 'Vérifie & ajoute' : 'Ajouter un exercice'}</h2>
             </div>
             <button type="button" onClick={onClose} className="b-btn grid h-11 w-11 place-items-center rounded-full" aria-label="Fermer">
@@ -100,7 +96,7 @@ export function AddExerciseSheet({ session, onClose: closeNow, onAdded }: { sess
                   </button>
                 ))}
               </div>
-              <p className="mt-3 flex gap-2 rounded-xl border-2 border-dashed border-ink/50 px-3 py-2 text-[12px] font-semibold leading-snug text-ink/80">
+              <p className="mt-3 flex gap-2 rounded-xl border border-line px-3 py-2 text-[12px] font-semibold leading-snug text-ink/80">
                 <Info className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
                 {TAB_INFO[tab]}
               </p>
@@ -191,10 +187,10 @@ function LibraryTab({ session, inSession, onPick }: { session: Session; inSessio
               <button
                 type="button"
                 onClick={() => onPick(ex)}
-                className={`b-card flex w-full items-center gap-3 p-2 text-left !shadow-[0_3px_0_var(--color-shadow)] active:translate-y-px ${added ? 'opacity-60' : ''}`}
+                className={`b-card flex w-full items-center gap-3 p-2 text-left active:translate-y-px ${added ? 'opacity-60' : ''}`}
                 aria-label={`Voir ${ex.name}`}
               >
-                <span className="diagram-bg h-14 w-14 shrink-0 rounded-xl border-2 border-ink">
+                <span className="diagram-bg h-14 w-14 shrink-0 rounded-xl border border-line">
                   <ExerciseDiagram id={diagramOf(ex)} />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -218,7 +214,7 @@ function LibraryPreview({ ex, fromCatalog, added, onBack, onAdd }: { ex: Exercis
   return (
     <div className="space-y-3">
       {fromCatalog && (
-        <p className="flex gap-2 rounded-xl border-2 border-ink bg-mint px-3 py-2 text-[12px] font-bold leading-snug">
+        <p className="flex gap-2 rounded-xl border border-line bg-mint px-3 py-2 text-[12px] font-bold leading-snug">
           <Check className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={3} /> Cet exercice existe en fiche complète : c’est elle qui sera ajoutée.
         </p>
       )}
@@ -228,13 +224,13 @@ function LibraryPreview({ ex, fromCatalog, added, onBack, onAdd }: { ex: Exercis
           {ex.target} · {ex.equipment}
         </p>
       </div>
-      <section className="diagram-bg overflow-hidden rounded-xl border-[2.5px] border-ink shadow-[0_4px_0_var(--color-shadow)]">
+      <section className="diagram-bg overflow-hidden rounded-xl border border-line">
         <div className="mx-auto aspect-[5/4] w-full max-w-[300px]">
           <ExerciseDiagram id={diagramOf(ex)} />
         </div>
       </section>
       <DemoPlayer ex={ex} />
-      <p className="rounded-xl border-2 border-ink bg-paper px-3 py-2 text-[13px] font-bold leading-snug">
+      <p className="rounded-xl border border-line bg-paper px-3 py-2 text-[13px] font-bold leading-snug">
         {ex.sets} × {ex.reps}
         {ex.rest > 0 && ` · repos ${restLabel(ex.rest)}`}
       </p>
@@ -249,7 +245,7 @@ function LibraryPreview({ ex, fromCatalog, added, onBack, onAdd }: { ex: Exercis
         </p>
       )}
       {ex.steps.length > 0 && (
-        <details className="rounded-xl border-2 border-ink bg-paper px-3 py-2 text-[13px]">
+        <details className="rounded-xl border border-line bg-paper px-3 py-2 text-[13px]">
           <summary className="cursor-pointer font-black uppercase tracking-wide">Exécution ({ex.steps.length} étapes)</summary>
           <ol className="mt-2 list-decimal space-y-1 pl-5 leading-snug">
             {ex.steps.map((s, i) => (
@@ -324,7 +320,7 @@ function CatalogTab({ onPick }: { onPick: (e: CatalogEntry) => void }) {
           const full = !!LIBRARY_OF_CATALOG[e.id]
           return (
             <li key={e.id} className="cv-row">
-              <button type="button" onClick={() => onPick(e)} className="b-card flex w-full items-center gap-3 p-2 text-left !shadow-[0_3px_0_var(--color-shadow)] active:translate-y-px">
+              <button type="button" onClick={() => onPick(e)} className="b-card flex w-full items-center gap-3 p-2 text-left active:translate-y-px">
                 <Thumb src={imgUrl(e.img[0])} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-[14px] font-black">{full ? LIBRARY[LIBRARY_OF_CATALOG[e.id]].name : nameOf(e)}</span>
@@ -347,9 +343,9 @@ function CatalogTab({ onPick }: { onPick: (e: CatalogEntry) => void }) {
 function Thumb({ src }: { src: string }) {
   const [ok, setOk] = useState(true)
   return ok ? (
-    <img src={src} alt="" loading="lazy" onError={() => setOk(false)} className="h-14 w-14 shrink-0 border-2 border-ink object-cover rounded-xl" />
+    <img src={src} alt="" loading="lazy" onError={() => setOk(false)} className="h-14 w-14 shrink-0 border border-line object-cover rounded-xl" />
   ) : (
-    <span className="grid h-14 w-14 shrink-0 place-items-center border-2 border-ink rounded-xl">
+    <span className="grid h-14 w-14 shrink-0 place-items-center border border-line rounded-xl">
       <ImageOff className="h-4 w-4 text-ink/50" />
     </span>
   )
@@ -455,14 +451,14 @@ function Preview({ draft: d, setDraft, onBack, onSave }: { draft: CustomDraft; s
 
   return (
     <div>
-      <p className="mb-3 flex gap-2 rounded-xl border-2 border-ink bg-sun px-3 py-2 text-[12px] font-bold leading-snug">
+      <p className="mb-3 flex gap-2 rounded-xl border border-line bg-sun px-3 py-2 text-[12px] font-bold leading-snug">
         <Info className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={2.5} />
         <span>
           Fiche simplifiée : schéma approchant (touche-le pour en changer), tempo standard, pas de conseils genou / cheville
           {d.stepsLang === 'en' ? ', consignes en anglais' : ''}. Vérifie les séries et le repos.
         </span>
       </p>
-      <section className="diagram-bg overflow-hidden border-[2.5px] border-ink shadow-[0_4px_0_var(--color-shadow)] rounded-xl">
+      <section className="diagram-bg overflow-hidden border border-line rounded-xl">
         <div className="mx-auto aspect-[5/4] w-full max-w-[300px]">
           <ExerciseDiagram id={d.diagram ?? 'squat'} />
         </div>
@@ -472,9 +468,9 @@ function Preview({ draft: d, setDraft, onBack, onSave }: { draft: CustomDraft; s
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         {d.photos ? (
-          d.photos.map((src, i) => <img key={i} src={src} alt={`Position ${i + 1}`} className="aspect-[4/3] w-full border-2 border-ink object-cover rounded-xl" />)
+          d.photos.map((src, i) => <img key={i} src={src} alt={`Position ${i + 1}`} className="aspect-[4/3] w-full border border-line object-cover rounded-xl" />)
         ) : d.catalogId ? (
-          <p className="col-span-2 flex items-center gap-2 border-2 border-dashed border-ink/50 px-3 py-2 text-[12px] font-bold text-ink/70 rounded-xl">
+          <p className="col-span-2 flex items-center gap-2 border border-line px-3 py-2 text-[12px] font-bold text-ink/70 rounded-xl">
             <Loader2 className="h-4 w-4 animate-spin" /> Téléchargement des photos…
           </p>
         ) : null}
@@ -506,14 +502,14 @@ function Preview({ draft: d, setDraft, onBack, onSave }: { draft: CustomDraft; s
           {timed ? '⏱ Maintien chrono' : '🏋️ Répétitions'}
         </button>
       </div>
-      <p className="mb-3 border-2 border-ink bg-paper px-3 py-2 text-[13px] font-bold leading-snug rounded-xl">
+      <p className="mb-3 border border-line bg-paper px-3 py-2 text-[13px] font-bold leading-snug rounded-xl">
         {d.sets} × {d.reps} · repos {d.restS ?? 0} s
         {d.cadence?.length ? <span className="block text-[12px] text-ink/70">Tempo coach : {d.cadence.map((p) => `${p.label} ${p.s} s`).join(' → ')}</span> : null}
       </p>
 
       {d.tip && <p className="mb-2 text-[13px] leading-snug"><b>Consigne :</b> {d.tip}</p>}
       {d.steps && d.steps.length > 0 && (
-        <details className="mb-3 border-2 border-ink bg-paper px-3 py-2 text-[13px] rounded-xl">
+        <details className="mb-3 border border-line bg-paper px-3 py-2 text-[13px] rounded-xl">
           <summary className="cursor-pointer font-black uppercase tracking-wide">Exécution ({d.steps.length} étapes{d.stepsLang === 'en' ? ', en anglais' : ''})</summary>
           <ol className="mt-2 list-decimal space-y-1 pl-5 leading-snug">
             {d.steps.map((s, i) => (
@@ -552,7 +548,7 @@ function DiagramPicker({ value, onChange }: { value: AnimationId; onChange: (id:
           aria-checked={id === value}
           aria-label={id}
           onClick={() => onChange(id)}
-          className={`diagram-bg h-[72px] w-[72px] shrink-0 border-2 ${id === value ? 'border-flame shadow-[0_3px_0_var(--color-shadow)]' : 'border-ink opacity-70'}`}
+          className={`diagram-bg h-[72px] w-[72px] shrink-0 border ${id === value ? 'border-flame' : 'border-line opacity-70'}`}
         >
           <ExerciseDiagram id={id} />
         </button>

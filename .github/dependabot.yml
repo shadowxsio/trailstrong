@@ -12,8 +12,12 @@ updates:
       minor-and-patch:
         update-types: [minor, patch]
 
+  # Actions épinglées par SHA (commentaire # vX) : Dependabot met à jour le SHA et le commentaire.
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
       day: monday
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,8 +1,7 @@
-import { BarChart3, LayoutGrid, Menu, Search } from 'lucide-react'
-import { Suspense, lazy, useEffect, useMemo, useRef, useState, type CSSProperties, type ComponentProps, type TouchEvent } from 'react'
-import { flushSync } from 'react-dom'
+import { BarChart3, LayoutGrid, Menu, Search, type LucideIcon } from 'lucide-react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState, type ComponentProps, type TouchEvent } from 'react'
 import { Catalog, type Scope } from './components/Catalog'
-import { SESSION_META } from './components/meta'
+import { SESSION_META, sessionIcon } from './components/meta'
 import { LoginScreen } from './components/LoginScreen'
 import type { SettingsSheet as SettingsSheetType } from './components/SettingsSheet'
 import { TimerBar } from './components/TimerBar'
@@ -13,7 +12,6 @@ import { useProgram } from './lib/custom'
 import { firebaseEnabled } from './lib/firebaseConfig'
 import { inSandbox } from './lib/sandbox'
 import { today, updateProfile, useData } from './lib/storage'
-import { haptic } from './lib/haptics'
 
 const CloudApp = lazy(() => import('./CloudApp'))
 // Écrans secondaires chargés à la demande (démarrage plus léger ; précachés pour le hors-ligne).
@@ -24,12 +22,12 @@ const SandboxApp = lazy(() => import('./SandboxApp'))
 
 export type View = Scope | 'stats'
 
-type Tab = { id: View; label: string; short: string; emoji?: string; bg: string }
+type Tab = { id: View; label: string; short: string; icon: LucideIcon }
 
 /** Onglets : dossiers colorés en haut (desktop) / dock en bas (mobile), d'après le programme du compte. */
 function tabsOf(program: Session[]): Tab[] {
   return [
-    { id: 'all', label: 'Tout', short: 'Tout', bg: 'bg-paper' },
+    { id: 'all', label: 'Tout', short: 'Tout', icon: LayoutGrid },
     // L'Activation est intégrée en tête de chaque séance : pas d'onglet dédié.
     ...program
       .filter((s) => s.id !== 'activation' && s.exercises.length > 0)
@@ -37,11 +35,9 @@ function tabsOf(program: Session[]): Tab[] {
         id: s.id as View,
         label: s.short,
         short: s.short.length > 9 ? SESSION_META[s.id].short : s.short,
-        // L'emplacement « tapis » peut accueillir une Séance C (gainage…) dans un programme généré.
-        emoji: s.id === 'tapis' && !/tapis/i.test(s.short) ? '🧱' : SESSION_META[s.id].emoji,
-        bg: SESSION_META[s.id].bg,
+        icon: sessionIcon(s.id, s.short),
       })),
-    { id: 'stats', label: 'Progression', short: 'Stats', bg: 'bg-sky' },
+    { id: 'stats', label: 'Progression', short: 'Stats', icon: BarChart3 },
   ]
 }
 
@@ -107,48 +103,11 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
   const touch = useRef<{ x: number; y: number; ok: boolean } | null>(null)
 
   const setView = (v: View) => {
+    setViewState(v)
+    setFocus(null)
     localStorage.setItem(VIEW_KEY, v)
-    const apply = () => {
-      setViewState(v)
-      setFocus(null)
-      window.scrollTo({ top: 0 })
-    }
-    // Changement d'onglet animé : la page glisse dans le sens de l'onglet (View Transitions).
-    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown }
-    if (v === view || !doc.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return apply()
-    const ids = TABS.map((t) => t.id)
-    document.documentElement.dataset.vt = ids.indexOf(v) < ids.indexOf(view) ? 'back' : 'fwd'
-    const vt = doc.startViewTransition(() => flushSync(apply)) as { finished?: Promise<void> }
-    vt.finished?.finally(() => delete document.documentElement.dataset.vt)
+    window.scrollTo({ top: 0 })
   }
-  const tabIndex = Math.max(0, TABS.findIndex((t) => t.id === view))
-  // En-tête compact (verre) dès qu'on fait défiler la page.
-  const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    let raf = 0
-    const on = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => setScrolled(window.scrollY > 24))
-    }
-    window.addEventListener('scroll', on, { passive: true })
-    on()
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('scroll', on)
-    }
-  }, [])
-  // Pastille du dock : étirement « liquide » pendant le déplacement.
-  const [pillMoving, setPillMoving] = useState(false)
-  const firstPill = useRef(true)
-  useEffect(() => {
-    if (firstPill.current) {
-      firstPill.current = false
-      return
-    }
-    setPillMoving(true)
-    const id = window.setTimeout(() => setPillMoving(false), 560)
-    return () => window.clearTimeout(id)
-  }, [tabIndex])
 
   const focusSearch = () => {
     if (view === 'stats') setView('all')
@@ -174,7 +133,7 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
     const i = TABS.findIndex((t) => t.id === view)
     const j = i + (dx < 0 ? 1 : -1)
     if (j >= 0 && j < TABS.length) {
-      haptic(8)
+      navigator.vibrate?.(8)
       setView(TABS[j].id)
     }
   }
@@ -193,53 +152,52 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
   return (
     <div className="min-h-dvh" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      {/* ── En-tête ── */}
-      <header className={`pt-safe sticky top-0 z-30 transition-[background-color,box-shadow] duration-300 ${scrolled ? 'header-glass' : ''}`}>
-        <div className={`mx-auto flex max-w-6xl items-center gap-2.5 px-3 transition-[padding] duration-300 md:px-6 ${scrolled ? 'pb-2 pt-2' : 'pb-4 pt-4'}`}>
-          <button
-            type="button"
-            onClick={() => setView('all')}
-            className={`logo-patch -rotate-2 origin-left text-[19px] transition-[scale] duration-300 min-[400px]:text-[22px] ${scrolled ? 'scale-[0.84]' : ''}`}
-            aria-label="Accueil"
-          >
-            <span>TrailStrong</span>
+      {/* ── En-tête : logo + sous-titre à gauche, accès rapides compacts à droite ── */}
+      <header className="pt-safe">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 border-b border-line px-5 pb-4 pt-5 md:border-b-0 md:px-6">
+          <button type="button" onClick={() => setView('all')} className="logo-patch" aria-label="Accueil">
+            <span className="text-[24px] min-[400px]:text-[26px]">TrailStrong</span>
+            <span className="mt-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted">Séances &amp; préparation</span>
           </button>
           <button
             type="button"
             onClick={focusSearch}
             aria-label="Rechercher"
-            className="b-btn ml-auto grid h-12 w-12 shrink-0 place-items-center rounded-full"
+            className="ml-auto grid h-10 w-10 shrink-0 place-items-center rounded-full border border-cream/45 text-cream transition-colors duration-150 hover:border-cream"
           >
-            <Search className="h-5 w-5" strokeWidth={2.8} />
+            <Search className="h-[17px] w-[17px]" strokeWidth={2.4} />
           </button>
-          <button type="button" onClick={() => setMenu(true)} data-tour="menu" className="b-btn flex h-12 shrink-0 items-center gap-1.5 bg-sun px-3 text-[15px] uppercase tracking-wide min-[400px]:px-4">
-            <Menu className="h-5 w-5" strokeWidth={3} /> Menu
+          <button type="button" onClick={() => setMenu(true)} data-tour="menu" className="pill pill-amber h-10 shrink-0 gap-1.5 px-4 text-[12px] uppercase">
+            <Menu className="h-4 w-4" strokeWidth={2.8} /> Menu
           </button>
         </div>
 
-        {/* Onglets-dossiers (desktop) */}
-        <nav className="mx-auto hidden max-w-6xl items-end gap-1.5 px-6 md:flex" aria-label="Onglets" data-tour="tabs">
-          {TABS.map((t) => {
-            const active = t.id === view
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setView(t.id)}
-                aria-current={active ? 'page' : undefined}
-                className={`-mb-[2.5px] rounded-t-xl border-[2.5px] border-ink px-4 text-[13px] font-black uppercase tracking-wide transition-all duration-150 ${
-                  active ? `h-12 border-b-hero bg-hero` : `h-10 ${t.bg} hover:h-11`
-                }`}
-              >
-                {t.emoji && <span className="mr-1 not-italic">{t.emoji}</span>}
-                {t.label}
-              </button>
-            )
-          })}
+        {/* Onglets (desktop) : barre à filet, onglet actif souligné ambre */}
+        <nav className="mx-auto hidden max-w-6xl px-6 md:block" aria-label="Onglets" data-tour="tabs">
+          <ul className="flex border-b border-line">
+            {TABS.map((t, i) => {
+              const active = t.id === view
+              return (
+                <li key={t.id}>
+                  <button
+                    type="button"
+                    onClick={() => setView(t.id)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`-mb-px flex h-11 items-center gap-2 border-b-2 px-4 text-[12px] font-bold uppercase tracking-[0.14em] transition-colors duration-150 ${
+                      active ? 'border-sun text-ink' : 'border-transparent text-muted hover:text-ink'
+                    }`}
+                  >
+                    <span className="tabular-nums text-[10px] text-muted">{String(i).padStart(2, '0')}</span>
+                    {t.label}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
         </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl px-3 pb-48 md:px-6 md:pb-28" style={{ viewTransitionName: 'page' } as CSSProperties}>
+      <main className="mx-auto max-w-6xl px-3 pb-44 md:px-6 md:pb-28">
         {view === 'stats' ? (
           <Suspense fallback={null}>
             <StatsView testsOpen={testsOpen} setTestsOpen={setTestsOpen} />
@@ -251,43 +209,29 @@ export function Shell({ onLock, cloud }: { onLock: () => void; cloud?: Component
 
       <TimerBar />
 
-      {/* ── Dock mobile : capsule en verre + pastille liquide ── */}
-      <nav
-        className="vt-dock pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(10px+env(safe-area-inset-bottom))] md:hidden"
-        aria-label="Onglets"
-        data-noswipe
-        data-tour="tabs"
-      >
-        <div className="glass pointer-events-auto relative mx-auto max-w-xl rounded-[30px] p-1">
-          <span
-            aria-hidden="true"
-            className={`liquid-pill absolute bottom-1 left-1 top-1 rounded-[26px] border-2 border-ink shadow-[0_2px_0_var(--color-shadow)] ${TABS[tabIndex]?.bg ?? 'bg-paper'} ${pillMoving ? 'moving' : ''}`}
-            style={{ width: `calc((100% - 8px) / ${TABS.length})`, transform: `translateX(${tabIndex * 100}%)` }}
-          />
-          <ul className="relative grid" style={{ gridTemplateColumns: `repeat(${TABS.length}, minmax(0, 1fr))` }}>
-            {TABS.map((t) => {
-              const active = t.id === view
-              return (
-                <li key={t.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!active) haptic(6)
-                      setView(t.id)
-                    }}
-                    aria-current={active ? 'page' : undefined}
-                    className={`squish flex h-[56px] w-full flex-col items-center justify-center gap-0.5 px-0.5 ${active && t.bg !== 'bg-paper' ? 'text-on' : ''}`}
-                  >
-                    <span className={`grid h-7 place-items-center text-[17px] transition-transform duration-300 ${active ? '-translate-y-px scale-110' : ''}`}>
-                      {t.id === 'all' ? <LayoutGrid className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.id === 'stats' ? <BarChart3 className="h-[18px] w-[18px]" strokeWidth={2.5} /> : t.emoji}
-                    </span>
-                    <span className={`truncate text-[10px] uppercase tracking-wide ${active ? 'font-black' : 'font-extrabold text-ink/60'}`}>{t.short}</span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+      {/* ── Dock flottant en verre dépoli (mobile) : onglet actif en bulle corail ── */}
+      <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 px-3 md:hidden" aria-label="Onglets" data-noswipe data-tour="tabs">
+        <ul className="alpine-glass mb-3 flex h-14 items-center justify-around rounded-full px-1.5 shadow-2xl">
+          {TABS.map((t) => {
+            const active = t.id === view
+            const Icon = t.icon
+            return (
+              <li key={t.id} className="min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setView(t.id)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex h-11 min-w-0 flex-col items-center justify-center gap-0.5 rounded-full px-2.5 text-[10px] transition-colors duration-150 min-[400px]:px-3.5 ${
+                    active ? 'bg-flame/90 font-extrabold text-on' : 'font-bold text-cream/75'
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={2.4} />
+                  <span className="truncate uppercase">{t.short}</span>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
       </nav>
 
       <Suspense fallback={null}>

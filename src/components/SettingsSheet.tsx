@@ -4,7 +4,6 @@ import { createPortal } from 'react-dom'
 import { exitAdmin, lock, resetLocalPin, setLocalPin, useAdmin, usingDefaultPin } from '../lib/auth'
 import { getGoogleSession } from '../lib/googleAuth'
 import { PinLock } from './PinLock'
-import { useSheet } from '../lib/useSheet'
 import { useTheme } from '../lib/theme'
 import { setSoundPrefs, sfx, unlockAudio, useSoundPrefs } from '../lib/sound'
 import { backupNow, getRecoveryKey, restoreFromGist, setRecoveryKey } from '../lib/backup'
@@ -14,7 +13,7 @@ import { exportJson, importJson, today, updateGist, updateProfile, useData } fro
 import type { View } from '../App'
 
 export function SettingsSheet({
-  onClose: closeNow,
+  onClose,
   onLock,
   onNavigate,
   onTests,
@@ -30,8 +29,6 @@ export function SettingsSheet({
   /** Relance la visite guidée de l'app. */
   onTour?: () => void
 }) {
-  const sheet = useSheet(closeNow)
-  const onClose = sheet.close
   const data = useData()
   const g = data.gist
   const [theme, setTheme] = useTheme()
@@ -105,9 +102,9 @@ export function SettingsSheet({
   )
 
   return createPortal(
-    <div className={`${sheet.backdrop} fixed inset-0 z-50 flex items-end justify-center md:items-stretch md:justify-end`} onClick={onClose}>
+    <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
       <div
-        ref={sheet.ref} className={`${sheet.panel} pb-safe max-h-[92dvh] w-full max-w-xl overflow-y-auto border-[2.5px] border-b-0 border-ink bg-paper-2 px-4 pt-4 md:max-h-none md:w-[460px] md:border-b-[2.5px] md:border-r-0 rounded-t-[26px] md:rounded-none md:rounded-l-[26px]`}
+        className="sheet pb-safe max-h-[92dvh] w-full max-w-xl overflow-y-auto border border-b-0 border-line bg-paper-2 px-4 pt-4 md:max-h-none md:w-[460px] md:border-b md:border-r-0 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label="Réglages"
@@ -121,7 +118,7 @@ export function SettingsSheet({
         </div>
 
         {/* Liste cousue : surtitre + titre */}
-        <nav className="lined mb-6 border-[2.5px] border-ink shadow-[0_6px_0_var(--color-shadow)] rounded-xl">
+        <nav className="lined mb-6 border border-line rounded-xl">
           {(
             [
               ['all', undefined, '4 séances, 20 exercices', 'Tout le programme'],
@@ -165,7 +162,7 @@ export function SettingsSheet({
               if (!cloud) lock()
               onLock()
             }}
-            className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 border-t-[2.5px] border-ink bg-sun px-4 py-2 text-left"
+            className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 border-t border-line bg-sun px-4 py-2 text-left"
           >
             <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">{cloud ? cloud.email : account ? account.email : 'Session PIN'}</span>
             <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight">{cloud?.logoutLabel ?? 'Se déconnecter'}</span>
@@ -291,7 +288,7 @@ export function SettingsSheet({
         </Block>
 
         {msg && (
-          <p className={`mb-3 border-2 border-ink px-3 py-2 text-sm font-bold rounded-xl ${msg.ok ? 'bg-mint' : 'bg-rose'}`}>{msg.text}</p>
+          <p className={`mb-3 border border-line px-3 py-2 text-sm font-bold rounded-xl ${msg.ok ? 'bg-mint' : 'bg-rose'}`}>{msg.text}</p>
         )}
 
         {cloud ? (
@@ -308,7 +305,7 @@ export function SettingsSheet({
           title="Backup cloud — GitHub Gist"
           desc="Optionnel. Copie chiffrée (AES-256) dans un Gist secret, 20 s après chaque modification. Note la clé de récupération : elle est nécessaire pour restaurer sur un autre appareil."
         >
-          <label className="mb-2 flex h-11 items-center justify-between border-2 border-ink bg-paper px-3 text-[13px] text-ink rounded-xl">
+          <label className="mb-2 flex h-11 items-center justify-between border border-line bg-paper px-3 text-[13px] text-ink rounded-xl">
             Backup automatique
             <input
               type="checkbox"
@@ -341,9 +338,9 @@ export function SettingsSheet({
             {g.lastBackup ? `Dernier backup : ${new Date(g.lastBackup).toLocaleString('fr-CA')}` : 'Aucun backup cloud pour l’instant.'}
             {g.lastError && <span className="block text-danger">Dernière erreur : {g.lastError}</span>}
           </p>
-          <div className="mt-3 border-2 border-dashed border-ink p-3 rounded-xl">
+          <div className="mt-3 border border-line p-3 rounded-xl">
             <p className="label">Clé de récupération</p>
-            <p className="mt-1 select-all font-black italic tracking-wide">{getRecoveryKey()}</p>
+            <p className="mt-1 select-all font-black tracking-wide">{getRecoveryKey()}</p>
             <div className="mt-2 flex gap-2">
               <input
                 value={recovery}
@@ -496,7 +493,7 @@ function Field({
         placeholder={placeholder}
         autoComplete="off"
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 h-11 w-full border-2 border-ink bg-paper px-3 text-[13px] normal-case tracking-normal text-ink placeholder:text-ink/40 focus:outline-none focus:shadow-[0_3px_0_var(--color-flame)] rounded-xl"
+        className="mt-1 h-11 w-full border border-line bg-paper px-3 text-[13px] normal-case tracking-normal text-ink placeholder:text-ink/40 focus:outline-none focus: rounded-xl"
       />
     </label>
   )

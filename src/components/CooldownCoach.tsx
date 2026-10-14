@@ -13,7 +13,6 @@ import { updateSessionLog } from '../lib/storage'
 import { keepAwake, timerRunning } from '../lib/timer'
 import { ExerciseDiagram } from './ExerciseDiagram'
 import { PhotoPair, stretchPhotos } from './PhotoPair'
-import { useSheet } from '../lib/useSheet'
 
 interface Step {
   kind: 'prep' | 'hold'
@@ -34,9 +33,7 @@ function buildSteps(r: Stretch[]): Step[] {
 
 const mmss = (s: number) => `${Math.floor(s / 60)} min${s % 60 ? ` ${String(s % 60).padStart(2, '0')}` : ''}`
 
-export function CooldownCoach({ session, date, onClose: closeNow }: { session: Session; date: string; onClose: () => void }) {
-  const sheet = useSheet(closeNow)
-  const onClose = sheet.close
+export function CooldownCoach({ session, date, onClose }: { session: Session; date: string; onClose: () => void }) {
   const routine = useMemo(() => routineOf(session), [session])
   const steps = useMemo(() => buildSteps(routine), [routine])
   const [running, setRunning] = useState(false)
@@ -51,9 +48,9 @@ export function CooldownCoach({ session, date, onClose: closeNow }: { session: S
     running ? (
       <Runner steps={steps} onDone={() => updateSessionLog(date, session.id, { cooldownAt: Date.now() })} onClose={onClose} />
     ) : (
-      <div className={`${sheet.backdrop} fixed inset-0 z-[60] flex items-end justify-center`} onClick={onClose}>
+      <div className="fade-in fixed inset-0 z-[60] flex items-end justify-center bg-ink/40" onClick={onClose}>
         <div
-          ref={sheet.ref} className={`${sheet.panel} pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border-[2.5px] border-b-0 border-ink bg-paper-2 rounded-t-[26px] md:rounded-none md:rounded-l-[26px]`}
+          className="sheet pb-safe flex max-h-[94dvh] w-full max-w-xl flex-col border border-b-0 border-line bg-paper-2 rounded-t-2xl md:rounded-none md:rounded-l-[26px]"
           onClick={(e) => e.stopPropagation()}
           role="dialog"
           aria-label="Retour au calme"
@@ -61,7 +58,7 @@ export function CooldownCoach({ session, date, onClose: closeNow }: { session: S
         >
           <header className="flex items-start justify-between px-4 pt-4">
             <div>
-              <p className="tag h-6 -rotate-1 bg-mint px-2 text-[10px]">Étirements & mobilité · ≈ {mmss(routineSeconds(routine))}</p>
+              <p className="tag h-6 bg-mint px-2 text-[10px]">Étirements & mobilité · ≈ {mmss(routineSeconds(routine))}</p>
               <h2 className="headline mt-2 text-[26px]">Retour au calme</h2>
             </div>
             <button type="button" onClick={onClose} className="b-btn grid h-11 w-11 place-items-center rounded-full" aria-label="Fermer">
@@ -71,18 +68,18 @@ export function CooldownCoach({ session, date, onClose: closeNow }: { session: S
           <p className="px-4 pt-2 text-[13px] font-semibold text-ink/75">Le coach enchaîne tout seul : {PREP} s pour te placer, puis le maintien, côté gauche puis droit.</p>
           <ol className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {routine.map((s, i) => (
-              <li key={s.id} className="b-card flex gap-3 p-2 !shadow-[0_3px_0_var(--color-shadow)]">
+              <li key={s.id} className="b-card flex gap-3 p-2">
                 <div className="flex shrink-0 flex-col gap-1.5">
-                  <div className="diagram-bg h-[88px] w-[88px] rounded-xl border-2 border-ink">
+                  <div className="diagram-bg h-[88px] w-[88px] rounded-xl border border-line">
                     <ExerciseDiagram id={s.diagram} />
                   </div>
-                  {s.photos && <PhotoPair srcs={stretchPhotos(s.id)} alt={s.name} className="h-[66px] w-[88px] rounded-xl border-2 border-ink" />}
+                  {s.photos && <PhotoPair srcs={stretchPhotos(s.id)} alt={s.name} className="h-[66px] w-[88px] rounded-xl border border-line" />}
                 </div>
                 <div className="min-w-0 flex-1 py-0.5">
                   <p className="text-[11px] font-extrabold uppercase text-ink/60">
                     {i + 1}. {s.target}
                   </p>
-                  <p className="text-[15px] font-black italic leading-tight">{s.name}</p>
+                  <p className="text-[15px] font-black leading-tight">{s.name}</p>
                   <p className="mt-1 text-[12px] font-bold">
                     {s.hold} s{s.perSide ? ' / côté' : ''}
                   </p>
@@ -91,7 +88,7 @@ export function CooldownCoach({ session, date, onClose: closeNow }: { session: S
               </li>
             ))}
           </ol>
-          <div className="border-t-[2.5px] border-ink p-3">
+          <div className="border-t border-line p-3">
             <button
               type="button"
               onClick={() => {
@@ -202,7 +199,7 @@ function Runner({ steps, onDone, onClose }: { steps: Step[]; onDone: () => void;
 
   return (
     <div className="pt-safe pb-safe fixed inset-0 z-[70] flex flex-col bg-paper" role="dialog" aria-label="Retour au calme en cours" data-noswipe>
-      <header className="flex items-center gap-2 border-b-[2.5px] border-ink bg-paper px-3 py-2.5">
+      <header className="flex items-center gap-2 border-b border-line bg-paper px-3 py-2.5">
         <div className="min-w-0 flex-1">
           <p className="truncate text-[12px] font-extrabold uppercase tracking-wide text-ink/65">
             Retour au calme · {st.idx + 1}/{new Set(steps.map((s) => s.idx)).size}
@@ -218,24 +215,24 @@ function Runner({ steps, onDone, onClose }: { steps: Step[]; onDone: () => void;
         {e.finished ? (
           <>
             <Check className="h-20 w-20" strokeWidth={3} />
-            <p className="headline mt-3 text-[40px]">Bien joué</p>
+            <p className="display mt-3 text-[40px]">Bien joué</p>
             <p className="mt-2 text-[16px] font-black uppercase tracking-wide">Retour au calme terminé</p>
           </>
         ) : (
           <>
             <div className={`grid w-full gap-2 ${st.stretch.photos ? 'max-w-[360px] grid-cols-2' : 'max-w-[260px]'}`}>
-              <div className="diagram-bg aspect-[5/4] w-full rounded-xl border-2 border-ink shadow-[0_4px_0_var(--color-shadow)]">
+              <div className="diagram-bg aspect-[5/4] w-full rounded-xl border border-line">
                 <ExerciseDiagram id={st.stretch.diagram} />
               </div>
               {st.stretch.photos && (
-                <PhotoPair srcs={stretchPhotos(st.stretch.id)} alt={st.stretch.name} className="aspect-[5/4] w-full rounded-xl border-2 border-ink shadow-[0_4px_0_var(--color-shadow)]" />
+                <PhotoPair srcs={stretchPhotos(st.stretch.id)} alt={st.stretch.name} className="aspect-[5/4] w-full rounded-xl border border-line" />
               )}
             </div>
             <p className="mt-4 text-[14px] font-black uppercase tracking-wide">
               {st.kind === 'prep' ? 'Mets-toi en place' : 'Tiens, respire'}
               {st.side && ` · côté ${st.side}`}
             </p>
-            <p className="font-mono text-[96px] font-black leading-none tabular-nums" role="timer">
+            <p className="display text-[84px] leading-none tabular-nums" role="timer">
               {left}
             </p>
             <p className="mt-2 max-w-sm text-[13px] font-bold leading-snug">{st.kind === 'prep' ? st.stretch.steps.join(' ') : st.stretch.cue}</p>
@@ -249,7 +246,7 @@ function Runner({ steps, onDone, onClose }: { steps: Step[]; onDone: () => void;
         )}
       </main>
 
-      <div className="h-2 border-y-2 border-ink bg-paper">
+      <div className="h-2 border-y border-line bg-paper">
         <div className="h-full bg-leaf transition-[width] duration-100 ease-linear" style={{ width: `${Math.min(1, doneSec / total) * 100}%` }} />
       </div>
 
