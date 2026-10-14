@@ -1,6 +1,7 @@
 import { CloudUpload, Download, KeyRound, Lock, RotateCcw, Stethoscope, Upload, X } from 'lucide-react'
 import { useRef, useState, type ComponentType, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { HelpSheet } from './HelpSheet'
 import { exitAdmin, lock, resetLocalPin, setLocalPin, useAdmin, usingDefaultPin } from '../lib/auth'
 import { getGoogleSession } from '../lib/googleAuth'
 import { PinLock } from './PinLock'
@@ -99,6 +100,8 @@ export function SettingsSheet({
     </>
   )
 
+  const [help, setHelp] = useState(false)
+
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
       <div
@@ -136,6 +139,14 @@ export function SettingsSheet({
               <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">{title}</span>
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => setHelp(true)}
+            className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 px-4 py-2 text-left transition-colors hover:bg-sun/60"
+          >
+            <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">Toutes les réponses</span>
+            <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">Guide & aide</span>
+          </button>
           {onTour && (
             <button
               type="button"
@@ -426,6 +437,7 @@ export function SettingsSheet({
             </button>
           </section>
         )}
+        {help && <HelpSheet onClose={() => setHelp(false)} />}
         {askPin && <PinLock overlay onUnlock={() => setAskPin(false)} onCancel={() => setAskPin(false)} />}
         <p className="mb-2 flex items-start justify-center gap-1.5 text-center text-[12px] font-semibold leading-snug text-ink/70">
           <Stethoscope className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2.5} /> Repères d’entraînement, pas un avis médical : en cas de douleur ou de blessure, consulte un physio.
