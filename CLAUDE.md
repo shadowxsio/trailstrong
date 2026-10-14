@@ -57,12 +57,11 @@ Une modification de `deploy.yml` ne prend effet qu'**après fusion** (workflow_r
 - **Stockage par compte** : toute nouvelle clé `localStorage` propre à l'utilisateur passe par
   `scoped()` (`src/lib/account.ts`). En mode comptes, les données synchronisées sont décrites dans
   `src/lib/sync.ts` et contrôlées par `firestore.rules` (à mettre à jour si le format change).
-- **Base Firestore partagée avec TrailJourney** (`shadowxsio/trailjourney`, même projet Firebase) :
-  `firestore.rules` contient les règles des deux apps et doit rester identique dans les deux dépôts
-  (publier les règles d'une seule app efface celles de l'autre). Tests : `npm run test:rules` dans
-  le dépôt trailjourney (émulateur, cas TrailStrong compris).
-- **Domaine partagé** : TrailJourney est aussi servi sur `shadowxsio.github.io` (clés `trailjourney:*`,
-  cache `trailjourney-*`) ; ne jamais effacer ce qui n'est pas préfixé `trailstrong`/`ts:`.
+- **Projet Firebase partagé avec TrailJourney** (`shadowxsio/trailjourney`, même projet
+  `trailstrong-646d0`, même Auth) mais **bases Firestore séparées** : TrailStrong = base `(default)`,
+  TrailJourney = base `trailjourney`. Chaque base a ses propres règles : `firestore.rules` ne
+  concerne que TrailStrong ; publication : `npx firebase-tools deploy --only firestore:rules`
+  (`firebase.json` cible la base `(default)`). Ne jamais y publier les règles de TrailJourney.
 - **Exercices** : fiches complètes dans `src/data/program.ts` (programme de base) et
   `src/data/extras.ts` (bibliothèque). Chaque exercice de la bibliothèque doit avoir un schéma
   dédié (`src/components/diagram-base.tsx`), une entrée `DEMOS` (`src/data/demos.ts`, photos dans
