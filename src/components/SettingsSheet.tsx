@@ -1,31 +1,28 @@
 import { CloudUpload, Download, KeyRound, Lock, RotateCcw, Stethoscope, Upload, X } from 'lucide-react'
 import { useRef, useState, type ComponentType, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { HelpSheet } from './HelpSheet'
-import { exitAdmin, lock, resetLocalPin, setLocalPin, useAdmin, usingDefaultPin } from '../lib/auth'
-import { getGoogleSession } from '../lib/googleAuth'
+import type { CloudInfo } from './ProfileView'
+import { exitAdmin, resetLocalPin, setLocalPin, useAdmin, usingDefaultPin } from '../lib/auth'
 import { PinLock } from './PinLock'
 import { setSoundPrefs, sfx, unlockAudio, useSoundPrefs } from '../lib/sound'
 import { backupNow, getRecoveryKey, restoreFromGist, setRecoveryKey } from '../lib/backup'
 import type { FocusTag } from '../data/program'
 import { enterSandbox, inSandbox } from '../lib/sandbox'
-import { exportJson, importJson, today, updateGist, updateProfile, useData } from '../lib/storage'
+import { exportJson, importJson, today, updateGist, useData } from '../lib/storage'
 import type { View } from '../App'
 
 export function SettingsSheet({
   onClose,
-  onLock,
   onNavigate,
   onTests,
   cloud,
   onTour,
 }: {
   onClose: () => void
-  onLock: () => void
   onNavigate: (view: View, focus?: FocusTag) => void
   onTests: () => void
   /** Mode comptes (Firebase) : compte, synchro et programme. */
-  cloud?: { email: string; status: string; onRedoProgram: () => void; logoutLabel?: string; isOwner?: boolean }
+  cloud?: CloudInfo
   /** Relance la visite guidée de l'app. */
   onTour?: () => void
 }) {
@@ -35,7 +32,6 @@ export function SettingsSheet({
   const admin = useAdmin()
   const [askPin, setAskPin] = useState(false)
   const [recovery, setRecovery] = useState('')
-  const account = getGoogleSession()
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [busy, setBusy] = useState(false)
   const [pin1, setPin1] = useState('')
@@ -100,8 +96,6 @@ export function SettingsSheet({
     </>
   )
 
-  const [help, setHelp] = useState(false)
-
   return createPortal(
     <div className="fade-in fixed inset-0 z-50 flex items-end justify-center bg-ink/40 md:items-stretch md:justify-end" onClick={onClose}>
       <div
@@ -112,7 +106,10 @@ export function SettingsSheet({
         data-noswipe
       >
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="headline text-[30px]">Menu</h2>
+          <div>
+            <p className="kicker">Tout le reste</p>
+            <h2 className="headline text-[30px]">Menu</h2>
+          </div>
           <button type="button" onClick={onClose} className="b-btn grid h-11 w-11 place-items-center rounded-full" aria-label="Fermer">
             <X className="h-5 w-5" strokeWidth={3} />
           </button>
@@ -141,7 +138,7 @@ export function SettingsSheet({
           ))}
           <button
             type="button"
-            onClick={() => setHelp(true)}
+            onClick={() => onNavigate('help')}
             className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 px-4 py-2 text-left transition-colors hover:bg-sun/60"
           >
             <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">Toutes les réponses</span>
@@ -165,18 +162,7 @@ export function SettingsSheet({
             <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">Toutes les 4 semaines, G / D</span>
             <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight text-ink">Tests mensuels</span>
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (!cloud) lock()
-              onLock()
-            }}
-            className="flex min-h-[57px] w-full flex-wrap items-center gap-x-3 border-t border-line bg-sun px-4 py-2 text-left"
-          >
-            <span className="text-[10px] font-extrabold uppercase tracking-[0.1em] text-ink/70">{cloud ? cloud.email : account ? account.email : 'Session PIN'}</span>
-            <span className="text-[19px] font-black uppercase tracking-wide leading-tight tracking-tight">{cloud?.logoutLabel ?? 'Se déconnecter'}</span>
-          </button>
-        </nav>
+</nav>
 
         <h3 className="headline headline-sun mb-3 text-[22px]">Réglages</h3>
 
@@ -205,46 +191,6 @@ export function SettingsSheet({
               <span className="text-[11px] font-semibold text-muted">Suivi live de trail · ouvrir ↗</span>
             </span>
           </a>
-        </Block>
-
-        {cloud && (
-          <Block title="Mon compte" desc={`${cloud.email} · ${cloud.status}`}>
-            <button type="button" onClick={cloud.onRedoProgram} className="b-btn flex h-12 w-full items-center justify-center gap-2 bg-sun text-[13px] uppercase tracking-wide">
-              ✨ Refaire mon programme (questionnaire)
-            </button>
-            <p className="mt-2 text-[12px] font-semibold text-ink/65">Tes séances, ton historique et tes réglages sont enregistrés dans ton compte et suivent sur tous tes appareils.</p>
-          </Block>
-        )}
-
-        <Block title="Profil" desc="Ton poids sert à doser les protéines, glucides et l’eau dans le bilan de fin de séance.">
-          <div className="flex gap-2">
-            <input
-              id="profile-weight"
-              inputMode="decimal"
-              defaultValue={data.profile.weightKg ? String(Math.round((data.profile.weightUnit === 'lbs' ? data.profile.weightKg * 2.20462 : data.profile.weightKg) * 10) / 10) : ''}
-              key={data.profile.weightUnit ?? 'kg'}
-              onChange={(e) => {
-                const v = parseFloat(e.target.value.replace(',', '.'))
-                const unit = data.profile.weightUnit ?? 'kg'
-                updateProfile({ weightKg: Number.isFinite(v) && v > 0 ? Math.round((unit === 'lbs' ? v / 2.20462 : v) * 10) / 10 : undefined })
-              }}
-              placeholder="Poids"
-              aria-label="Poids"
-              className="b-input h-11 min-w-0 flex-1 px-3 font-mono text-[15px]"
-            />
-            {(['kg', 'lbs'] as const).map((u) => (
-              <button
-                key={u}
-                type="button"
-                aria-pressed={(data.profile.weightUnit ?? 'kg') === u}
-                onClick={() => updateProfile({ weightUnit: u })}
-                className={`b-btn h-11 w-14 text-[13px] uppercase tracking-wide ${(data.profile.weightUnit ?? 'kg') === u ? 'b-btn-ink' : ''}`}
-              >
-                {u}
-              </button>
-            ))}
-          </div>
-          {data.profile.weightKg && <p className="mt-2 text-[12px] font-semibold text-ink/65">Enregistré : {data.profile.weightKg} kg · repère protéines {Math.round((data.profile.weightKg * 0.3) / 5) * 5}-{Math.round((data.profile.weightKg * 0.4) / 5) * 5} g après la séance.</p>}
         </Block>
 
         <Block title="Son du coach" desc="Un son différent pour le décompte, le départ, chaque phase, la dernière rep, la fin, le repos et la reprise. La voix (en option) compte les reps.">
@@ -437,7 +383,6 @@ export function SettingsSheet({
             </button>
           </section>
         )}
-        {help && <HelpSheet onClose={() => setHelp(false)} />}
         {askPin && <PinLock overlay onUnlock={() => setAskPin(false)} onCancel={() => setAskPin(false)} />}
         <p className="mb-2 flex items-start justify-center gap-1.5 text-center text-[12px] font-semibold leading-snug text-ink/70">
           <Stethoscope className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2.5} /> Repères d’entraînement, pas un avis médical : en cas de douleur ou de blessure, consulte un physio.

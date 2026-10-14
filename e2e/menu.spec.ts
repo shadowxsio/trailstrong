@@ -15,21 +15,20 @@ test.describe('Menu', () => {
     await shot('La suite Trail dans le Menu')
   })
 
-  test('Guide & aide : sommaire, recherche et réponses', async ({ app, page, shot }) => {
+  test('Onglet Aide : FAQ, recherche, tuto à refaire et contact', async ({ app, page, shot }) => {
     await app()
-    await page.getByRole('button', { name: 'Menu' }).click()
-    await page.getByRole('button', { name: /Guide & aide/ }).click()
-    const help = page.getByRole('dialog', { name: 'Guide & aide' })
+    await page.getByRole('navigation', { name: 'Onglets' }).getByRole('button', { name: /Aide/ }).click()
+    const help = page.getByRole('region', { name: 'Guide & aide' })
     await expect(help.getByRole('navigation', { name: 'Sommaire' }).getByRole('button')).toHaveCount(8)
     await help.getByRole('button', { name: /Faire une séance/ }).click()
     await expect(help.locator('#aide-seance')).toHaveAttribute('open', '')
-    await shot('Guide & aide')
+    await expect(help.getByRole('link', { name: /Nous écrire/ })).toHaveAttribute('href', /^mailto:.+subject=/)
+    await shot('Onglet Aide')
     await help.getByLabel('Rechercher dans l’aide').fill('tempo répétition')
     await expect(help.getByTestId('help-sections').locator('details')).toHaveCount(1)
     await expect(help.getByTestId('help-sections')).toContainText('Le coach sonore')
-    await help.getByRole('button', { name: 'Retour au Menu' }).click()
-    await expect(help).toHaveCount(0)
-    await expect(page.getByRole('dialog', { name: 'Réglages' })).toBeVisible()
+    await help.getByRole('button', { name: /Refaire le tuto/ }).click()
+    await expect(page.getByRole('dialog', { name: /Visite guidée/ })).toBeVisible()
   })
 
   test('Pas d’assistant IA dans les réglages', async ({ app, page }) => {
@@ -41,7 +40,7 @@ test.describe('Menu', () => {
   test('Visite guidée pas à pas', async ({ app, page, shot }) => {
     await app()
     await page.getByRole('button', { name: 'Menu' }).click()
-    await page.getByRole('button', { name: /Visite guidée/ }).click()
+    await page.getByRole('dialog', { name: 'Réglages' }).getByRole('button', { name: /Visite guidée/ }).click()
     const tour = page.getByRole('dialog', { name: /Visite guidée/ })
     await expect(tour).toBeVisible()
     const seen: string[] = []
