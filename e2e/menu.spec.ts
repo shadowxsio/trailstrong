@@ -15,6 +15,23 @@ test.describe('Menu', () => {
     await shot('La suite Trail dans le Menu')
   })
 
+  test('Guide & aide : sommaire, recherche et réponses', async ({ app, page, shot }) => {
+    await app()
+    await page.getByRole('button', { name: 'Menu' }).click()
+    await page.getByRole('button', { name: /Guide & aide/ }).click()
+    const help = page.getByRole('dialog', { name: 'Guide & aide' })
+    await expect(help.getByRole('navigation', { name: 'Sommaire' }).getByRole('button')).toHaveCount(8)
+    await help.getByRole('button', { name: /Faire une séance/ }).click()
+    await expect(help.locator('#aide-seance')).toHaveAttribute('open', '')
+    await shot('Guide & aide')
+    await help.getByLabel('Rechercher dans l’aide').fill('tempo répétition')
+    await expect(help.getByTestId('help-sections').locator('details')).toHaveCount(1)
+    await expect(help.getByTestId('help-sections')).toContainText('Le coach sonore')
+    await help.getByRole('button', { name: 'Retour au Menu' }).click()
+    await expect(help).toHaveCount(0)
+    await expect(page.getByRole('dialog', { name: 'Réglages' })).toBeVisible()
+  })
+
   test('Pas d’assistant IA dans les réglages', async ({ app, page }) => {
     await app()
     await page.getByRole('button', { name: 'Menu' }).click()

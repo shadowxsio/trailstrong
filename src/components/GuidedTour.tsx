@@ -27,7 +27,7 @@ const STEPS: Step[] = [
     text: 'Tu veux varier ? « Bibliothèque » : des fiches complètes comme ton programme. « Catalogue » : 800 exercices en fiche simplifiée (photos, schéma approchant). Touche une carte puis « Retirer » pour en enlever un.',
   },
   { target: 'mobility', title: '3 · Mobilité', text: 'Pour finir, le retour au calme guidé : des étirements choisis pour la séance, enchaînés par le coach.' },
-  { target: 'menu', title: 'Le Menu', text: 'Ton profil, le son du coach, le thème clair ou sombre, refaire ton programme… et revoir cette visite.' },
+  { target: 'menu', title: 'Le Menu', text: 'Ton profil, le son du coach, refaire ton programme, le guide & aide complet… et revoir cette visite.' },
   {
     title: 'C’est parti !',
     text: 'Ton programme est généré automatiquement à partir de tes réponses : c’est un repère, pas un avis médical. Le mieux est de le faire valider par un physio ou un coach, surtout en cas de douleur ou de blessure.',
