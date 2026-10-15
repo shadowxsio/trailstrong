@@ -1,4 +1,8 @@
 # 🏔️ TrailStrong 2026
+> **📦 Dépôt archivé.** TrailStrong vit désormais dans le monorepo privé **`shadowxsio/trail-suite`**
+> (dossier `apps/strong`, historique Git conservé) et est publié sur **https://strong.trailsuite.app**.
+> L'ancienne adresse GitHub Pages ne sert plus que la page de déménagement (`moved/`).
+
 
 PWA de renforcement pour coureurs de trail.
 
